@@ -5,14 +5,14 @@ Object.assign(S.STRINGS.en, {
  'nav.settings': 'Settings', 'set.eyebrow': 'Make it yours', 'set.profile': 'Profile & preferences', 'set.name': 'Name', 'set.water': 'Daily water goal (glasses)',
  'set.reset': '30-Day Reset', 'set.start': 'Start date', 'set.restart': 'Restart the reset from Day 1', 'set.restartQ': 'Clear all 30-Day Reset progress and reflections and start again today?',
  'set.units': 'Units', 'unit.metric': 'Metric (L)', 'unit.imperial': 'Imperial (fl oz)',
- 'set.pin': 'PIN lock', 'set.pinLead': 'Ask for a PIN when the app opens. It hides your data on this device from others; it is not encryption.', 'set.pinOn': 'PIN lock is on.', 'set.pinNew': 'New PIN (4–8 digits)', 'set.pinRepeat': 'Repeat PIN', 'set.pinSave': 'Set PIN', 'set.pinRemove': 'Remove PIN', 'set.pinBad': 'PINs must match and be 4–8 digits.', 'set.pinSaved': 'PIN saved.',
+ 'set.pin': 'PIN lock', 'set.pinLead': 'Lock your Cycle and Journal with a PIN. They re-lock whenever you leave the app. The PIN keeps others out on this device; your backup file is separately encrypted.', 'set.pinOn': 'PIN lock is on for Cycle and Journal.', 'set.pinNew': 'New PIN (4–8 digits)', 'set.pinRepeat': 'Repeat PIN', 'set.pinSave': 'Set PIN', 'set.pinRemove': 'Remove PIN', 'set.pinBad': 'PINs must match and be 4–8 digits.', 'set.pinSaved': 'PIN saved.',
  'set.tour': 'Tutorial', 'set.tourShow': 'Show the intro when the app opens', 'set.tourReplay': 'Replay tutorial',
  'set.backup': 'Encrypted backup', 'set.backupLead': 'Your data lives only on this device. Export an encrypted file (AES-256-GCM, password via PBKDF2) and keep it safe — without the password it cannot be opened.',
  'set.pw': 'Backup password (min. 8 characters)', 'set.export': 'Export backup', 'set.import': 'Import backup', 'set.file': 'Backup file', 'set.pwShort': 'Use a password of at least 8 characters.', 'set.exported': 'Backup downloaded.', 'set.importQ': 'Replace all data on this device with this backup?', 'set.imported': 'Backup restored.', 'set.importBad': 'Could not open the file — wrong password or not a Sienna backup.', 'set.noFile': 'Choose a backup file first.',
  'set.account': 'Account', 'set.accountSoon': 'Sign in / Create account — coming soon', 'set.accountLead': 'Accounts will sync Sienna across your devices. The planned privacy model:',
  'set.acc1': 'Everyday data (profile, checklist, hydration, workouts, favourites) is stored securely and recoverable with your email login.', 'set.acc2': 'Your Journal and cycle data will be end-to-end encrypted on your device — not even Sienna can read them.', 'set.acc3': 'You will receive a personal recovery key for that encrypted data. Without it, it cannot be restored.', 'set.acc4': 'Until then, everything stays on this device. Use the encrypted backup above.',
  'set.danger': 'Delete all data on this device', 'set.dangerQ': 'Delete everything on this device? This cannot be undone.',
- 'lock.title': 'Welcome back', 'lock.pin': 'Enter your PIN', 'lock.open': 'Unlock', 'lock.bad': 'Incorrect PIN. Try again.',
+ 'lock.title': 'Private space', 'lock.pin': 'Enter your PIN', 'lock.open': 'Unlock', 'lock.bad': 'Incorrect PIN. Try again.',
  'intro.title': 'Welcome to Sienna', 'intro.text': 'Your calm space for movement, nourishment, recovery and care. Let us show you around — it takes less than a minute.', 'intro.tour': 'Take the tour', 'intro.skip': 'Not now', 'intro.hide': 'Don\'t show again',
  'tour.next': 'Next', 'tour.back': 'Back', 'tour.done': 'Finish', 'tour.skip': 'Skip', 'tour.step': 'Step {i} of {n}',
  'tour.ring.t': 'Progress ring', 'tour.ring.x': 'Your daily balance at a glance. It fills as you complete today\'s rituals — there is no "failing" a day.',
@@ -20,7 +20,7 @@ Object.assign(S.STRINGS.en, {
  'tour.water.t': 'Hydration', 'tour.water.x': 'Tap + for every glass. Reaching your goal ticks Hydrate automatically. Change the goal and units in Settings.',
  'tour.reset.t': '30-Day Reset', 'tour.reset.x': 'Thirty days in four phases — Awaken, Nourish, Strengthen, Balance. Each day has 7 parts: focus, movement, nourish, hydration, self-care, mindset and a reflection. Missing a day never resets your progress.',
  'tour.sections.t': 'Your sections', 'tour.sections.x': 'Movement builds workouts for your goal and level. Nutrition is the cookbook. Recovery has breathing, stretching and wind-down. My Journal tracks mood and energy.',
- 'tour.settings.t': 'Settings', 'tour.settings.x': 'Edit your preferences, set a PIN, make an encrypted backup and replay this tour any time.'
+ 'tour.cycle.t': 'Cycle', 'tour.cycle.x': 'Private, on-device cycle tracking. See your phase — menstrual, follicular, ovulatory or luteal — with movement, food and care tips, pain relief and when to see a doctor. Never uploaded.', 'tour.settings.t': 'Settings', 'tour.settings.x': 'Edit your preferences, set a PIN, make an encrypted backup and replay this tour any time.'
 });
 const enc = new TextEncoder(), dec = new TextDecoder(), C = crypto.subtle;
 const b64 = u => { let s = ''; const a = new Uint8Array(u); for (let i = 0; i < a.length; i += 32768) s += String.fromCharCode.apply(null, a.subarray(i, i + 32768)); return btoa(s); };
@@ -100,11 +100,14 @@ document.addEventListener('submit', async ev => {
     if (!/^\d{4,8}$/.test(a) || a !== b) return msg('pinmsg', t('set.pinBad'));
     const salt = rnd(16); setCfg({ pin: { salt: b64(salt), hash: await pinHash(a, salt) } }); msg('pinmsg', t('set.pinSaved')); }
   if (ev.target.id === 'lockform') { ev.preventDefault(); const pin = cfg().pin, v = $('#lockpin').value;
-    if (await pinHash(v, ub64(pin.salt)) === pin.hash) { $('#lock').remove(); unlocked = true; maybeIntro(); } else { msg('lockmsg', t('lock.bad')); $('#lockpin').value = ''; } }
+    if (await pinHash(v, ub64(pin.salt)) === pin.hash) { unlocked = true; S.render(); } else { msg('lockmsg', t('lock.bad')); $('#lockpin').value = ''; } }
 });
 
 /* ---------- PIN lock ---------- */
-let unlocked = true;
+let unlocked = false;
+const guard = view => r => (cfg().pin && !unlocked) ? `<form id="lockform" class="ob ob-welcome lockview">${$('.brand .mark').outerHTML}<h1 class="display">${t('lock.title')}</h1><p class="lead">${t('nav.' + view.key)}</p><label class="label" for="lockpin">${t('lock.pin')}</label><input id="lockpin" class="input pin" type="password" inputmode="numeric" autocomplete="off"><button class="btn wide" type="submit">${t('lock.open')}</button><p class="muted small" id="lockmsg" aria-live="assertive"></p></form>` : view(r);
+for (const k of ['cycle', 'journal']) { const v = S.VIEWS[k]; v.key = k; S.VIEWS[k] = guard(v); }
+document.addEventListener('visibilitychange', () => { if (document.hidden && unlocked) { unlocked = false; S.render(); } });
 function lock() {
   unlocked = false; const d = document.createElement('div'); d.id = 'lock'; d.className = 'lock';
   d.innerHTML = `<form id="lockform" class="ob ob-welcome">${$('.brand .mark').outerHTML}<p class="wordmark lg">SIENNA</p><h1 class="display">${t('lock.title')}</h1><label class="label" for="lockpin">${t('lock.pin')}</label><input id="lockpin" class="input pin" type="password" inputmode="numeric" autocomplete="off" autofocus><button class="btn wide" type="submit">${t('lock.open')}</button><p class="muted small" id="lockmsg" aria-live="assertive"></p></form>`;
@@ -112,12 +115,12 @@ function lock() {
 }
 
 /* ---------- Intro + guided tour ---------- */
-const STEPS = [['.ring-card', 'ring'], ['.checklist', 'check'], ['.water', 'water'], ['[data-nav=reset]', 'reset'], ['.links-nav', 'sections'], ['#gear', 'settings']];
+const STEPS = [['.ring-card', 'ring'], ['.checklist', 'check'], ['.water', 'water'], ['[data-nav=reset]', 'reset'], ['.links-nav', 'sections'], ['[data-nav=cycle]', 'cycle'], ['#gear', 'settings']];
 let shown = false, layer = null, cur = 0;
 function overlay(html) { endTour(); layer = document.createElement('div'); layer.className = 'tour'; layer.innerHTML = html; document.body.appendChild(layer); return layer; }
 function endTour() { if (layer) layer.remove(); layer = null; }
 function maybeIntro() {
-  if (shown || !unlocked || !St.get().profile || cfg().hideTour) return; shown = true;
+  if (shown || !St.get().profile || cfg().hideTour) return; shown = true;
   overlay(`<div class="tour-modal" role="dialog" aria-modal="true" aria-labelledby="introT">${$('.brand .mark').outerHTML}<h2 class="display" id="introT">${t('intro.title')}</h2><p class="lead">${t('intro.text')}</p>
   <button class="btn wide" data-tour="start">${t('intro.tour')}</button><button class="btn ghost wide" data-tour="end">${t('intro.skip')}</button><label class="toggle"><input type="checkbox" id="introHide"> ${t('intro.hide')}</label></div>`);
 }
@@ -146,6 +149,5 @@ document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && layer) e
 addEventListener('resize', place); addEventListener('scroll', place, { passive: true });
 St.subscribe(() => maybeIntro());
 S.startTour = startTour;
-if (cfg().pin && St.get().profile) lock();
 S.render(); maybeIntro();
 })();

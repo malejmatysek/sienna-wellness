@@ -112,3 +112,16 @@ a.card.feature{transition:transform .15s}a.card.feature:active{transform:scale(.
 .tour-tip{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;background:var(--ivory);border-radius:22px;padding:20px;box-shadow:var(--shadow);transition:top .3s}.tour-tip p{font-size:15px}
 .tour-btns{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:16px}.tlink{margin-right:auto;color:var(--taupe);font-size:14px;padding:10px 4px}
 @media (min-width:960px){.gear{top:24px;right:28px}}
+/* Phase 3: motto, cycle */
+.motto{font:italic 400 19px/1.35 var(--serif);color:var(--taupe);margin-top:12px;max-width:26em}
+.links-nav{grid-template-columns:repeat(7,1fr)}.links-nav a{font-size:9.5px}
+.cycle-mini{display:flex;align-items:center;gap:14px;padding:16px 20px}.cycle-mini b{font:500 20px var(--serif)}
+.cy-dot{width:16px;height:16px;border-radius:50%;flex:none}.cy-dot.menstrual{background:#C98F86}.cy-dot.follicular{background:var(--peach);border:1px solid #E5BFA0}.cy-dot.ovulatory{background:var(--blush-d)}.cy-dot.luteal{background:var(--taupe)}
+.private p{font-size:15px}.ul{text-decoration:underline;text-underline-offset:3px}
+.cy-phase{display:flex;align-items:center;gap:20px}.cy-phase.menstrual .ring-fg{stroke:#C98F86}.cy-phase.ovulatory .ring-fg{stroke:var(--blush-d)}.cy-phase.luteal .ring-fg{stroke:var(--taupe)}
+.cy-ring .ring-num b{font-size:40px}.cy-next{font:italic 400 19px/1.35 var(--serif);padding:0 4px}
+.duo3{display:grid;gap:12px}.duo3 p:not(.eyebrow){margin-top:6px;font-size:15px}
+.flags{background:var(--espresso);color:var(--ivory)}.flags .bullets{color:#EBDDD3}.flags .bullets li::before{color:var(--blush-d)}
+.hist li.row{display:flex;align-items:center}.row .input{margin-top:0}
+.lockview{padding-top:8vh}
+@media (min-width:960px){.duo3{grid-template-columns:repeat(3,1fr)}.links-nav a{font-size:15px}}

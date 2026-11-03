@@ -11,11 +11,11 @@ const ICON = {
   move: 'M14 5.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0zM7 20l3.5-6 2.5 2v4M10.5 14l1-5 3 3H18M11.5 9 8 10.5 7 13',
   leaf: 'M5 19C5 11 10 5 20 5c0 9-6 14-14 14zM5 19l7-7', drop: 'M12 3.5s6 6.6 6 10.5a6 6 0 0 1-12 0c0-3.9 6-10.5 6-10.5z',
   moon: 'M19.5 14.5A7.5 7.5 0 1 1 9.5 4.5a6 6 0 0 0 10 10z', heart: 'M12 19.5s-7-4.3-7-9.6A3.9 3.9 0 0 1 12 7.6a3.9 3.9 0 0 1 7 2.3c0 5.3-7 9.6-7 9.6z',
-  pen: 'M6 4h9l3 3v13H6zM9 10h6M9 13.5h6M9 17h3.5', tick: 'M6 12.5l4 4 8-9'
+  pen: 'M6 4h9l3 3v13H6zM9 10h6M9 13.5h6M9 17h3.5', cycle: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z', tick: 'M6 12.5l4 4 8-9'
 };
 const ic = (n, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICON[n]}"/></svg>`;
 const MARK = `<svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="mk"><circle cx="40" cy="50" r="24"/></clipPath></defs><circle cx="40" cy="50" r="24" fill="#E8C1BA"/><circle cx="60" cy="50" r="24" fill="#F1D2BC"/><circle cx="60" cy="50" r="24" fill="#3B2A22" clip-path="url(#mk)"/></svg>`;
-const NAV = [['home', 'home'], ['reset', 'reset'], ['movement', 'move'], ['nutrition', 'leaf'], ['recovery', 'moon'], ['journal', 'pen']];
+const NAV = [['home', 'home'], ['reset', 'reset'], ['movement', 'move'], ['nutrition', 'leaf'], ['recovery', 'moon'], ['cycle', 'cycle'], ['journal', 'pen']];
 
 const day = (k = dkey()) => St.get().days[k] || { checks: {}, water: 0 };
 const setDay = fn => St.update(s => { const k = dkey(); s.days[k] = s.days[k] || { checks: {}, water: 0 }; fn(s.days[k], s); });
@@ -47,9 +47,9 @@ function home() {
   const h = new Date().getHours(), greet = t(h < 12 ? 'greet.morning' : h < 18 ? 'greet.afternoon' : 'greet.evening');
   const rd = curDay(), meal = S.MEALS[doy() % S.MEALS.length], mv = pickMove(), goal = p.waterGoal || 8, C = 2 * Math.PI * 52;
   return `<header class="hero"><p class="eyebrow">${esc(new Date().toLocaleDateString(loc(), { weekday: 'long', day: 'numeric', month: 'long' }))}</p>
-  <h1 class="display">${greet},<br><em>${esc(p.name)}</em></h1><a class="pill" href="#/reset/${rd}">${ic('reset')}<span>${t('home.resetDay', { n: rd })}</span></a></header>
+  <h1 class="display">${greet},<br><em>${esc(p.name)}</em></h1><p class="motto">“${esc(S.MOTTOS[doy() % S.MOTTOS.length])}”</p><a class="pill" href="#/reset/${rd}">${ic('reset')}<span>${t('home.resetDay', { n: rd })}</span></a></header>
   <section class="card ring-card"><div class="ring" role="img" aria-label="${t('home.progressAria', { pct })}"><svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" cx="60" cy="60" r="52" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - done / 6)}"/></svg><div class="ring-num"><b>${pct}<small>%</small></b><span>${t('home.today')}</span></div></div>
-  <div><h2 class="h2">${t('home.ringTitle')}</h2><p class="muted">${t(done === 6 ? 'home.ringDone' : 'home.ringText', { done, total: 6 })}</p></div></section>
+  <div><h2 class="h2">${t('home.ringTitle')}</h2><p class="muted">${t(done === 6 ? 'home.ringDone' : 'home.ringText', { done, total: 6 })}</p></div></section>${S.cycleCard ? S.cycleCard() : ''}
   <section><h2 class="section-title">${t('home.checklist')}</h2><p class="quick"><a href="#/movement">${t('nav.movement')}</a><a href="#/nutrition">${t('nav.nutrition')}</a><a href="#/recovery">${t('nav.recovery')}</a><a href="#/journal">${t('nav.journal')}</a><a href="#/reset/${rd}">${t('nav.reset')}</a></p><ul class="checklist">${S.CHECKLIST.map(c => checkBtn(`data-check="${c.id}"`, d.checks[c.id], t('check.' + c.id), t('check.' + c.id + '.sub'), c.icon)).join('')}</ul></section>
   <section class="card water"><div class="row"><div><h2 class="h2">${t('home.hydration')}</h2><p class="muted">${t('home.glasses', { n: d.water, goal }) + ((St.get().settings || {}).units === 'imperial' ? ` · ${d.water * 8} fl oz` : ` · ${(d.water * 0.25).toFixed(2).replace(/\.?0+$/, '')} L`)}</p></div>
   <div class="stepper"><button class="round" data-water="-1" aria-label="${t('home.waterLess')}"${d.water <= 0 ? ' disabled' : ''}>−</button><button class="round dark" data-water="1" aria-label="${t('home.waterMore')}">+</button></div></div>
