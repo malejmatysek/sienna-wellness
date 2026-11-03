@@ -199,3 +199,5 @@ textarea,.input,.lead,.muted{font-weight:400}
 .splash .mark{animation:bloom 1.4s cubic-bezier(.2,.9,.25,1) both}
 .splash .wordmark{animation:fadeup .9s .6s ease-out both}
 .splash-greet{animation:fadeup .9s 1.2s ease-out both}
+.splash .wordmark,.splash .wordmark.lg{font-weight:700;font-size:44px;color:var(--espresso)}
+.splash-greet{font-weight:600;font-size:26px;color:var(--espresso)}
