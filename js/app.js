@@ -136,5 +136,18 @@ if (sp) {
   const end = () => { if (spDone) return; spDone = true; sp.classList.add('out'); setTimeout(() => sp.remove(), 420); queue.splice(0).forEach(f => f()); };
   setTimeout(end, matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 1400); sp.addEventListener('click', end);
 }
-if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js');
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  const hadCtrl = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadCtrl || document.getElementById('updBar')) return;
+    const b = document.createElement('button'); b.id = 'updBar'; b.className = 'upd-bar';
+    b.innerHTML = '<span>A new version of Sienna is ready</span><b>Update</b>';
+    b.onclick = () => location.reload(); document.body.appendChild(b); requestAnimationFrame(() => b.classList.add('show'));
+  });
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(reg => {
+    const check = () => reg.update().catch(() => {});
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+    setInterval(check, 30 * 60 * 1000);
+  }).catch(() => {}));
+}
 })();

@@ -192,3 +192,6 @@ textarea,.input,.lead,.muted{font-weight:400}
 .howto>summary:active{transform:scale(.94)}
 .howbody{margin:10px 0 4px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.75);font-size:17px;line-height:1.5}
 .howbody p{margin:0 0 6px}.howbody ol{margin:6px 0 8px;padding-left:22px}.howbody ol li{display:list-item;margin:3px 0}
+.upd-bar{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 92px);z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-radius:18px;background:var(--espresso);color:var(--ivory);font:500 15px var(--sans);box-shadow:0 10px 30px rgba(60,40,30,.25);transform:translateY(20px);opacity:0;transition:.35s ease}
+.upd-bar.show{transform:none;opacity:1}.upd-bar b{padding:8px 16px;border-radius:99px;background:var(--blush);color:var(--espresso);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+@media (min-width:960px){.upd-bar{left:auto;width:380px;bottom:24px}}
