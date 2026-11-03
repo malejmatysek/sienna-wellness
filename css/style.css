@@ -168,3 +168,6 @@ body{font-size:18px}
 @media (min-width:960px){.links-nav a{font-size:16px;min-height:48px;justify-content:flex-start}}
 input[type=date].input,input[type=date]{-webkit-appearance:none;appearance:none;display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;text-align:left}
 input[type=date]::-webkit-date-and-time-value{text-align:left}
+.motto-card{margin:4px 0 18px;padding:18px 20px;border:1px solid var(--line);border-radius:20px;background:var(--ivory);text-align:center}
+.motto-card small{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--taupe);margin-bottom:8px}
+.motto-card .motto{margin:0 auto;color:var(--espresso);font-size:21px}

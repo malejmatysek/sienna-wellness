@@ -47,7 +47,7 @@ function home() {
   const p = St.get().profile, d = day(), done = S.CHECKLIST.filter(c => d.checks[c.id]).length, pct = Math.round(done / 6 * 100);
   const rd = curDay(), dd = dayData(rd), goal = p.waterGoal || 8, C = 2 * Math.PI * 52, imp = (St.get().settings || {}).units === 'imperial';
   return `<header class="hero"><p class="eyebrow">${esc(new Date().toLocaleDateString(loc(), { weekday: 'long', day: 'numeric', month: 'long' }))}</p>
-  <h1 class="display">${t(greetKey())},<br><em>${esc(p.name)}</em></h1><p class="motto">“${esc(S.MOTTOS[doy() % S.MOTTOS.length])}”</p></header>
+  <h1 class="display">${t(greetKey())},<br><em>${esc(p.name)}</em></h1></header><section class="motto-card"><small>Say this to yourself today</small><p class="motto">“${esc(S.MOTTOS[doy() % S.MOTTOS.length])}”</p></section>
   <section class="card ring-card"><div class="ring" role="img" aria-label="${t('home.progressAria', { pct })}"><svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" cx="60" cy="60" r="52" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - done / 6)}"/></svg><div class="ring-num"><b>${pct}<small>%</small></b></div></div>
   <div><h2 class="h2">${t('home.ringTitle')}</h2><p class="muted">${t(done === 6 ? 'home.ringDone' : 'home.ringText', { done, total: 6 })}</p></div></section>
   <section><h2 class="section-title">${t('home.checklist')}</h2><ul class="checklist">${S.CHECKLIST.map(c => checkBtn(`data-check="${c.id}"`, d.checks[c.id], t('check.' + c.id), t('check.' + c.id + '.sub'))).join('')}</ul></section>
