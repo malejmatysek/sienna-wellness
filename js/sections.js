@@ -6,7 +6,7 @@ Object.assign(S.STRINGS.en, {
  'nut.eyebrow': 'The Sienna cookbook', 'nut.lead': 'Simple, high-protein meals made from real food. Feel full, strong and full of energy — no dieting.',
  'nut.pickTitle': 'What should I eat today?', 'nut.pickLead': 'A balanced day of meals, picked for you.', 'nut.pickBtn': 'Plan my day', 'nut.repick': 'Pick again', 'nut.planTotal': 'About {kcal} kcal · {p} g protein for the day',
  'nut.search': 'Search recipes or ingredients', 'nut.none': 'No recipes match — try another filter.', 'nut.protein': 'protein', 'nut.fav': 'Save to favourites', 'nut.count': '{n} recipes',
- 'nut.ingredients': 'Ingredients', 'nut.steps': 'Method', 'nut.ate': 'I ate this today', 'nut.ated': 'Nourish ticked for today ✓', 'nut.min': 'minutes', 'nut.back': 'Cookbook',
+ 'nut.ingredients': 'Ingredients', 'nut.steps': 'Method', 'nut.ate': 'I ate this today', 'nut.ated': 'Eat well ticked for today ✓', 'nut.min': 'minutes', 'nut.back': 'Cookbook',
  'mov.eyebrow': 'Workout builder', 'mov.title': 'Movement', 'mov.lead': 'Choose a goal, time and level. We make the workout for you.',
  'mov.goal': 'Goal', 'mov.time': 'Time', 'mov.level': 'Level', 'goal.sculpt': 'Tone & sculpt', 'goal.strength': 'Strength', 'goal.core': 'Core & Pilates', 'goal.cardio': 'Cardio burn', 'goal.mobility': 'Mobility',
  'lvl.1': 'Beginner', 'lvl.2': 'Intermediate', 'lvl.3': 'Advanced', 'mov.session': 'Your session', 'mov.warm': 'Warm-up · 3 min: marching, arm circles, hip rolls', 'mov.cool': 'Cool-down · 2 min: easy stretching and slow breaths',
@@ -133,7 +133,7 @@ document.addEventListener('click', ev => {
   if (a === 'fav') { let added; St.update(s => { s.favs = s.favs || []; const i = s.favs.indexOf(b.dataset.id); added = i < 0; added ? s.favs.push(b.dataset.id) : s.favs.splice(i, 1); }); S.toast(added ? 'Saved to favourites ♥' : 'Removed from favourites'); }
   else if (a === 'fmeal') { ui.meal = v; S.render(); } else if (a === 'ftag') { ui.tag = v; S.render(); }
   else if (a === 'pick') St.update(s => { s.plans = s.plans || {}; const p = {}; MEALS.forEach(m => { const pool = S.RECIPES.filter(x => x.meal === m); p[m] = pool[Math.floor(Math.random() * pool.length)].id; }); s.plans[today()] = p; });
-  else if (a === 'ate') { tick('nourish'); S.toast('Nourish ticked ✓'); }
+  else if (a === 'ate') { tick('nourish'); S.toast('Eat well ticked ✓'); }
   else if (a === 'mgoal') { ui.goal = v; S.render(); } else if (a === 'mtime') { ui.time = +v; S.render(); } else if (a === 'mlevel') { ui.level = +v; S.render(); }
   else if (a === 'shuffle') { ui.seed++; S.render(); }
   else if (a === 'wdone') { const s = build(); St.update(st => { st.workouts = st.workouts || []; st.workouts.push({ date: today(), at: Date.now(), goal: ui.goal, time: ui.time, level: ui.level, ids: s.picks.map(x => x.id) }); }); tick('move'); S.toast('Workout saved ✓'); }

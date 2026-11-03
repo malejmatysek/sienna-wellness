@@ -5,7 +5,7 @@ Object.assign(S.STRINGS.en, {
  'tour.more.x': 'Workouts, rest, your private cycle tracker, your journal and settings — all in one list.',
  'tour.more.t': 'More',
  'tour.nourish.x': 'Recipes for every meal. Search, save your favourites, or let us plan your day.',
- 'tour.nourish.t': 'Nourish',
+ 'tour.nourish.t': 'Food',
  'nav.settings': 'Settings', 'set.eyebrow': 'Make it yours', 'set.profile': 'Profile & preferences', 'set.name': 'Name', 'set.water': 'Daily water goal (glasses)',
  'set.reset': '30-Day Reset', 'set.start': 'Start date', 'set.restart': 'Restart the reset from Day 1', 'set.restartQ': 'Clear all 30-Day Reset progress and reflections and start again today?',
  'set.units': 'Units', 'unit.metric': 'Metric (L)', 'unit.imperial': 'Imperial (fl oz)',
