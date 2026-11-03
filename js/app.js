@@ -133,8 +133,8 @@ const sp = $('#splash'), queue = []; let spDone = !sp;
 S.afterSplash = f => spDone ? f() : queue.push(f);
 if (sp) {
   const p = St.get().profile; $('#splashGreet').textContent = p ? `${t(greetKey())}, ${p.name}` : t('splash.welcome');
-  const end = () => { if (spDone) return; spDone = true; sp.classList.add('out'); setTimeout(() => sp.remove(), 420); queue.splice(0).forEach(f => f()); };
-  setTimeout(end, matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 1400); sp.addEventListener('click', end);
+  const end = () => { if (spDone) return; spDone = true; sp.classList.add('out'); setTimeout(() => sp.remove(), 700); queue.splice(0).forEach(f => f()); };
+  setTimeout(end, matchMedia('(prefers-reduced-motion: reduce)').matches ? 2200 : 3400); sp.addEventListener('click', end);
 }
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   const hadCtrl = !!navigator.serviceWorker.controller;
