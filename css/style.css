@@ -201,3 +201,5 @@ textarea,.input,.lead,.muted{font-weight:400}
 .splash-greet{animation:fadeup .9s 1.2s ease-out both}
 .splash .wordmark,.splash .wordmark.lg{font-weight:700;font-size:44px;color:var(--espresso)}
 .splash-greet{font-weight:600;font-size:26px;color:var(--espresso)}
+@keyframes enter{from{opacity:.55;transform:translateY(6px)}to{opacity:1;transform:none}}
+#view.enter{animation:enter .28s ease-out both}

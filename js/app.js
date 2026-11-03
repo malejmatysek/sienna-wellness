@@ -122,7 +122,8 @@ document.addEventListener('input', e => {
   St.update(s => { s.reset[n] = s.reset[n] || { tasks: {}, reflection: '' }; s.reset[n].reflection = v; }, true);
   clearTimeout(saveT); saveT = setTimeout(() => { const el = $('#saved'); if (el) el.textContent = t('reset.saved'); S.toast(t('toast.saved')); }, 700);
 });
-window.addEventListener('hashchange', () => { render(); window.scrollTo(0, 0); });
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.addEventListener('hashchange', () => { window.scrollTo(0, 0); render(); });
 Object.assign(S, { esc, ic, dkey, setDay, range, render, curDay, weekHTML: week, MARK });
 St.init(); St.subscribe(render);
 $('#nav').innerHTML = `<a class="brand" href="#/home" aria-label="Sienna Wellness">${MARK}<span class="wordmark">SIENNA</span></a><div class="links-nav">${NAV.map(([id, icon]) => `<a href="#/${id}" data-nav="${id}">${ic(icon)}<span>${t('navs.' + id)}</span></a>`).join('')}</div>`;
