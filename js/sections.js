@@ -77,7 +77,7 @@ function movement() {
   <h2 class="label">${t('mov.time')}</h2>${chipRow('mtime', [10, 20, 30, 45], ui.time, v => v + ' min')}<h2 class="label">${t('mov.level')}</h2>${chipRow('mlevel', [1, 2, 3], ui.level, v => t('lvl.' + v))}</section>
   <section class="card blush session"><p class="eyebrow">${t('mov.session')} · ${ui.time} min · ${t('lvl.' + ui.level)}</p><h2 class="h2">${t('goal.' + ui.goal)}</h2>
   <p class="muted small">${t('mov.warm')}</p><p class="rounds">${t('mov.rounds', { n: s.rounds, w: s.w, r: s.r })}</p>
-  <ol class="ex">${s.picks.map(x => `<li><b>${e(x.name)}</b><small>${e(x.cue)}</small></li>`).join('')}</ol><p class="muted small">${t('mov.cool')}</p>
+  <ol class="ex">${s.picks.map(x => `<li><div class="exrow"><span><b>${e(x.name)}</b><small>${e(x.cue)}</small></span></div>${(h => h ? `<details class="howto"><summary aria-label="${t('mov.how')}: ${e(x.name)}">?</summary><div class="howbody"><p><b>${t('mov.works')}</b> ${e(h.works)}</p><ol>${h.steps.map(z => `<li>${e(z)}</li>`).join('')}</ol><p><b>${t('mov.easier')}</b> ${e(h.easier)}</p></div></details>` : '')((S.HOWTO || {})[x.id])}</li>`).join('')}</ol><p class="muted small">${t('mov.cool')}</p>
   <div class="links"><button class="btn ghost" data-act="shuffle">${t('mov.shuffle')}</button><button class="btn" data-act="wdone">${t('mov.done')}</button></div>${done ? `<p class="okmsg">${t('mov.doneToday')}</p>` : ''}</section>
   <section class="card"><h2 class="h2">${t('mov.history')}</h2>${hist.length ? `<ul class="hist">${hist.map(h => `<li><span>${fmtDate(h.date)}</span><b>${t('goal.' + h.goal)}</b><small>${h.time} min · ${t('lvl.' + h.level)}</small></li>`).join('')}</ul>` : `<p class="muted">${t('mov.noHistory')}</p>`}</section>`;
 }

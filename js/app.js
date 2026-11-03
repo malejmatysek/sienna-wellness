@@ -99,7 +99,7 @@ function render() {
     const inMore = MORE.some(m => m[0] === sec);
     view.innerHTML = sec === 'reset' ? (r[1] ? dayView(Math.min(30, Math.max(1, +r[1] || 1))) : resetView()) : sec === 'more' ? more()
       : S.VIEWS && S.VIEWS[sec] ? (inMore ? `<a class="back" href="#/more">← ${t('nav.more')}</a>` : '') + S.VIEWS[sec](r) : home();
-    const navSec = ['reset', 'nutrition'].includes(sec) ? sec : (sec === 'more' || inMore) ? 'more' : 'home';
+    const navSec = ['reset', 'movement', 'nutrition'].includes(sec) ? sec : (sec === 'more' || inMore) ? 'more' : 'home';
     document.querySelectorAll('[data-nav]').forEach(a => a.setAttribute('aria-current', a.dataset.nav === navSec ? 'page' : 'false'));
   }
   if (route !== lastRoute) { view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); lastRoute = route; }

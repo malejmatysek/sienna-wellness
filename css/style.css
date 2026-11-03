@@ -182,3 +182,13 @@ textarea,.input,.lead,.muted{font-weight:400}
 .wordmark{font-weight:600}
 .splash .wordmark,.splash .wordmark.lg{font-weight:700}
 .splash .mark{stroke-width:2.4}
+
+/* v11: exercise how-to */
+.ex>li{position:relative}
+.ex .exrow{padding-right:56px}
+.howto>summary{position:absolute;top:2px;right:0;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;list-style:none;cursor:pointer;background:var(--cream,#FFFBF3);border:1.5px solid var(--taupe,#66554A);color:var(--ink,#3B2A22);font:600 22px/1 Jost,sans-serif}
+.howto>summary::-webkit-details-marker{display:none}
+.howto[open]>summary{background:var(--ink,#3B2A22);color:#fff}
+.howto>summary:active{transform:scale(.94)}
+.howbody{margin:10px 0 4px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.75);font-size:17px;line-height:1.5}
+.howbody p{margin:0 0 6px}.howbody ol{margin:6px 0 8px;padding-left:22px}.howbody ol li{display:list-item;margin:3px 0}
