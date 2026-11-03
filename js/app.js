@@ -17,8 +17,8 @@ const ICON = {
 };
 const ic = (n, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICON[n]}"/></svg>`;
 const MARK = `<svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="mk"><circle cx="40" cy="50" r="24"/></clipPath></defs><circle cx="40" cy="50" r="24" fill="#E8C1BA"/><circle cx="60" cy="50" r="24" fill="#F1D2BC"/><circle cx="60" cy="50" r="24" fill="#3B2A22" clip-path="url(#mk)"/></svg>`;
-const NAV = [['home', 'home'], ['reset', 'reset'], ['nutrition', 'leaf'], ['more', 'grid']];
-const MORE = [['movement', 'move'], ['recovery', 'moon'], ['cycle', 'cycle'], ['journal', 'pen'], ['settings', 'gear']];
+const NAV = [['home', 'home'], ['reset', 'reset'], ['movement', 'move'], ['nutrition', 'leaf'], ['more', 'grid']];
+const MORE = [['recovery', 'moon'], ['cycle', 'cycle'], ['journal', 'pen'], ['settings', 'gear']];
 
 const day = (k = dkey()) => St.get().days[k] || { checks: {}, water: 0 };
 const setDay = fn => St.update(s => { const k = dkey(); s.days[k] = s.days[k] || { checks: {}, water: 0 }; fn(s.days[k], s); });

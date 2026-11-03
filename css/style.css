@@ -141,7 +141,7 @@ body{font-size:18px}
 .fav{width:48px;height:48px}.days{grid-template-columns:repeat(auto-fill,minmax(52px,1fr))}.dchip{font-size:21px}
 .feature .meta,.rcard .tags,.tags{font-size:15px}.input,textarea{font-size:18px;min-height:52px}
 .ring-num b{font-size:38px}
-.links-nav{grid-template-columns:repeat(4,1fr)}.links-nav a{font-size:13px;min-height:58px;justify-content:center;gap:4px}.links-nav .ic{width:26px;height:26px;transition:transform .15s}
+.links-nav{grid-template-columns:repeat(5,1fr)}.links-nav a{font-size:12px;min-height:58px;justify-content:center;gap:4px}.links-nav .ic{width:26px;height:26px;transition:transform .15s}
 .links-nav a:active .ic{transform:scale(.85)}.links-nav a[aria-current=page]{color:var(--espresso)}
 .links-nav a[aria-current=page] span{font-weight:600}
 .gear{display:none}
@@ -166,3 +166,5 @@ body{font-size:18px}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.splash .mark,.splash .wordmark,.splash-greet,#view.enter,.check.pop,.check.pop .box{animation:none}}
 @media (min-width:960px){.links-nav a{font-size:16px;min-height:48px;justify-content:flex-start}}
+input[type=date].input,input[type=date]{-webkit-appearance:none;appearance:none;display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;text-align:left}
+input[type=date]::-webkit-date-and-time-value{text-align:left}
