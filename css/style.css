@@ -98,3 +98,17 @@ a.card.feature{transition:transform .15s}a.card.feature:active{transform:scale(.
 .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.sc{display:grid;justify-items:center;gap:6px;padding:10px 0;border-radius:14px;font-size:11px;color:var(--taupe)}.sc i{width:calc(14px + var(--s)*4px);height:calc(14px + var(--s)*4px);border-radius:50%;background:var(--blush)}.sc.on{background:var(--cream);color:var(--espresso);font-weight:500}.sc.on i{background:var(--espresso)}
 .jchart{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:16px;text-align:center}.jbars{height:90px;display:flex;align-items:flex-end;justify-content:center;gap:3px}.jbars i{width:9px;border-radius:99px;min-height:4px}.m{background:var(--blush-d)}.en{background:var(--espresso)}.jchart span{font-size:12px;margin-top:6px;display:block}
 .legend{margin-top:12px;font-size:12px;color:var(--taupe);display:flex;align-items:center;gap:6px}.legend i{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:8px}
+/* Phase 2b: settings, lock, tour */
+.gear{position:fixed;top:calc(env(safe-area-inset-top) + 14px);right:16px;z-index:11;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--ivory);box-shadow:var(--shadow)}
+.gear circle{fill:var(--ivory)}body.onboarding .gear{display:none}
+.toggle{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:15px}.toggle input{width:20px;height:20px;accent-color:var(--espresso)}
+.soon-card{background:var(--ivory);border-radius:16px;padding:16px;margin:12px 0;text-align:center;font:500 19px var(--serif)}
+.btn.danger{color:#9A4F45;border-color:#D9A79F}.btn.sm{min-height:42px;padding:0 18px}
+.card .btn.wide{margin-top:16px}input[type=file].input{padding:10px}
+.lock{position:fixed;inset:0;z-index:50;background:var(--cream);overflow:auto;padding:0 22px}.lock .input.pin{text-align:center;font-size:24px;letter-spacing:.5em}
+.tour{position:fixed;inset:0;z-index:40}.tour-modal{position:absolute;inset:auto 16px calc(env(safe-area-inset-bottom) + 16px);max-width:460px;margin:0 auto;background:var(--ivory);border-radius:28px;padding:30px 24px;text-align:center;box-shadow:0 0 0 100vmax rgba(59,42,34,.45)}
+.tour-modal .mark{width:56px;height:56px}.tour-modal .display{font-size:34px}.tour-modal .btn.wide{margin-top:12px}.tour-modal .toggle{justify-content:center}
+.tour-spot{position:fixed;border-radius:20px;box-shadow:0 0 0 100vmax rgba(59,42,34,.55);transition:all .3s;pointer-events:none}
+.tour-tip{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;background:var(--ivory);border-radius:22px;padding:20px;box-shadow:var(--shadow);transition:top .3s}.tour-tip p{font-size:15px}
+.tour-btns{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:16px}.tlink{margin-right:auto;color:var(--taupe);font-size:14px;padding:10px 4px}
+@media (min-width:960px){.gear{top:24px;right:28px}}

@@ -51,7 +51,7 @@ function home() {
   <section class="card ring-card"><div class="ring" role="img" aria-label="${t('home.progressAria', { pct })}"><svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" cx="60" cy="60" r="52" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - done / 6)}"/></svg><div class="ring-num"><b>${pct}<small>%</small></b><span>${t('home.today')}</span></div></div>
   <div><h2 class="h2">${t('home.ringTitle')}</h2><p class="muted">${t(done === 6 ? 'home.ringDone' : 'home.ringText', { done, total: 6 })}</p></div></section>
   <section><h2 class="section-title">${t('home.checklist')}</h2><p class="quick"><a href="#/movement">${t('nav.movement')}</a><a href="#/nutrition">${t('nav.nutrition')}</a><a href="#/recovery">${t('nav.recovery')}</a><a href="#/journal">${t('nav.journal')}</a><a href="#/reset/${rd}">${t('nav.reset')}</a></p><ul class="checklist">${S.CHECKLIST.map(c => checkBtn(`data-check="${c.id}"`, d.checks[c.id], t('check.' + c.id), t('check.' + c.id + '.sub'), c.icon)).join('')}</ul></section>
-  <section class="card water"><div class="row"><div><h2 class="h2">${t('home.hydration')}</h2><p class="muted">${t('home.glasses', { n: d.water, goal })}</p></div>
+  <section class="card water"><div class="row"><div><h2 class="h2">${t('home.hydration')}</h2><p class="muted">${t('home.glasses', { n: d.water, goal }) + ((St.get().settings || {}).units === 'imperial' ? ` · ${d.water * 8} fl oz` : ` · ${(d.water * 0.25).toFixed(2).replace(/\.?0+$/, '')} L`)}</p></div>
   <div class="stepper"><button class="round" data-water="-1" aria-label="${t('home.waterLess')}"${d.water <= 0 ? ' disabled' : ''}>−</button><button class="round dark" data-water="1" aria-label="${t('home.waterMore')}">+</button></div></div>
   <div class="drops">${range(1, Math.max(goal, d.water)).map(i => `<span class="${i <= d.water ? 'full' : ''}">${ic('drop')}</span>`).join('')}</div></section>
   <section><h2 class="section-title">${t('home.forToday')}</h2><div class="duo">
@@ -61,7 +61,7 @@ function home() {
 }
 function resetView() {
   const rd = curDay(), c = doneCount(), dd = dayData(rd);
-  return `<header class="hero"><p class="eyebrow">${t('reset.eyebrow')}</p><h1 class="display">${t('reset.title')}</h1><p class="lead">${t('reset.lead')}</p></header>
+  return `<header class="hero"><p class="eyebrow">${t('reset.eyebrow')}</p><h1 class="display">${t('reset.title')}</h1><p class="lead">${t('reset.lead')}</p>${St.get().profile.resetStart ? `<p class="muted small">Started ${esc(new Date(St.get().profile.resetStart + 'T12:00').toLocaleDateString(loc(), { day: 'numeric', month: 'long', year: 'numeric' }))}</p>` : ''}</header>
   <section class="card"><div class="row"><div><p class="eyebrow">${t('reset.progress')}</p><p class="big">${c}<small>/30</small></p></div><p class="muted narrow">${t('reset.flex')}</p></div><div class="bar-h"><i style="width:${c / 30 * 100}%"></i></div></section>
   <a class="card feature blush link-card" href="#/reset/${rd}"><p class="eyebrow">${t(c === 30 ? 'reset.completeAll' : 'reset.continue')} · ${t('reset.day', { n: rd })}</p><h3 class="h3">${esc(dd.title)}</h3><p>${esc(dd.focus)}</p><span class="cta">${t('reset.open')} →</span></a>
   ${S.RESET_PHASES.map((p, i) => `<section class="phase"><div class="phase-head"><span class="num">0${i + 1}</span><div><h2 class="h2">${esc(p.name)}</h2><p class="muted">${t('reset.days', { a: p.days[0], b: p.days[1] })} · ${esc(p.intro)}</p></div></div>
@@ -110,7 +110,7 @@ document.addEventListener('click', e => {
   else if (b.dataset.task) St.update(s => { const n = b.dataset.day; s.reset[n] = s.reset[n] || { tasks: {}, reflection: '' }; s.reset[n].tasks[b.dataset.task] = !s.reset[n].tasks[b.dataset.task]; });
   else if (b.dataset.opt) { const g = b.dataset.opt, v = g === 'time' ? +b.dataset.val : b.dataset.val; if (b.hasAttribute('data-multi')) ob[g] = ob[g].includes(v) ? ob[g].filter(x => x !== v) : [...ob[g], v]; else ob[g] = v; render(); }
   else if (b.dataset.ob === 'next') { ob.step = 1; render(); $('#name').focus(); }
-  else if (b.dataset.ob === 'finish') { St.update(s => { s.profile = { name: ob.name, goals: ob.goals, level: ob.level, movement: ob.movement, time: ob.time, waterGoal: 8, lang: S.lang, createdAt: Date.now() }; }); location.hash = '#/home'; window.scrollTo(0, 0); }
+  else if (b.dataset.ob === 'finish') { St.update(s => { s.profile = { name: ob.name, goals: ob.goals, level: ob.level, movement: ob.movement, time: ob.time, waterGoal: 8, lang: S.lang, createdAt: Date.now(), resetStart: dkey() }; }); location.hash = '#/home'; window.scrollTo(0, 0); }
 });
 document.addEventListener('submit', e => { if (e.target.id === 'obName') { e.preventDefault(); ob.name = $('#name').value.trim(); if (ob.name) { ob.step = 2; render(); window.scrollTo(0, 0); } } });
 let saveT;
