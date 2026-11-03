@@ -125,3 +125,44 @@ a.card.feature{transition:transform .15s}a.card.feature:active{transform:scale(.
 .hist li.row{display:flex;align-items:center}.row .input{margin-top:0}
 .lockview{padding-top:8vh}
 @media (min-width:960px){.duo3{grid-template-columns:repeat(3,1fr)}.links-nav a{font-size:15px}}
+/* v6: simpler, larger, calmer + micro-interactions */
+:root{--taupe:#66554A;--line:#E0D2C1}
+body{font-size:18px}
+.eyebrow,.section-title{font-size:13px;letter-spacing:.12em;color:var(--taupe)}
+.muted{font-size:17px}.small{font-size:15px}.lead{font-size:18px}
+.display{font-size:42px}.h2{font-size:26px}.h3{font-size:24px}
+.motto{font:italic 400 21px/1.35 var(--serif);color:var(--taupe);margin-top:14px;max-width:24em}
+.ct b{font-size:18px}.ct small{font-size:16px;color:var(--taupe)}
+.check{min-height:72px;padding:16px 18px;gap:16px}.check .box{width:32px;height:32px;border-width:1.6px}.check .box .ic{width:18px;height:18px}
+.chip{min-height:48px;padding:0 20px;font-size:16px}
+.btn{min-height:56px;font-size:15px;letter-spacing:.08em}.btn.sm{min-height:48px}
+.round{width:56px;height:56px;font-size:28px}
+.back{font-size:17px;min-height:48px;display:inline-flex;align-items:center;color:var(--espresso)}
+.fav{width:48px;height:48px}.days{grid-template-columns:repeat(auto-fill,minmax(52px,1fr))}.dchip{font-size:21px}
+.feature .meta,.rcard .tags,.tags{font-size:15px}.input,textarea{font-size:18px;min-height:52px}
+.ring-num b{font-size:38px}
+.links-nav{grid-template-columns:repeat(4,1fr)}.links-nav a{font-size:13px;min-height:58px;justify-content:center;gap:4px}.links-nav .ic{width:26px;height:26px;transition:transform .15s}
+.links-nav a:active .ic{transform:scale(.85)}.links-nav a[aria-current=page]{color:var(--espresso)}
+.links-nav a[aria-current=page] span{font-weight:600}
+.gear{display:none}
+.more-list{list-style:none;display:grid;gap:12px}.more-list a{display:flex;align-items:center;gap:16px;background:var(--ivory);border-radius:20px;padding:16px 18px;min-height:80px;box-shadow:var(--shadow)}
+.mi{width:50px;height:50px;border-radius:50%;background:var(--blush);display:grid;place-items:center;flex:none}.chev{margin-left:auto;color:var(--taupe)}
+.btn,.chip,.check,.round,.more-list a,.link-card,.dchip,.fav,.sc,.rcard a{transition:transform .16s ease,background .25s,color .25s,box-shadow .25s,opacity .2s}
+.btn:active,.chip:active,.round:active,.more-list a:active,.link-card:active,.dchip:active,.fav:active,.sc:active{transform:scale(.96)}
+.check:active{transform:scale(.98)}
+#view.enter{animation:enter .4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.check.pop .box{animation:pop .45s cubic-bezier(.3,1.7,.5,1)}.check.pop{animation:glow .6s ease}
+@keyframes pop{0%{transform:scale(.5)}100%{transform:scale(1)}}@keyframes glow{0%{background:var(--blush)}100%{background:#FBF1EC}}
+.drops .full .ic{animation:none}.ring-fg{transition:stroke-dashoffset .7s cubic-bezier(.2,.8,.2,1)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 96px);transform:translate(-50%,16px);background:var(--espresso);color:var(--ivory);padding:14px 24px;border-radius:99px;font-size:17px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:60;white-space:nowrap;box-shadow:0 10px 30px -10px rgba(59,42,34,.5)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.splash{position:fixed;inset:0;z-index:70;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:opacity .42s ease;cursor:pointer}
+.splash.out{opacity:0;pointer-events:none}
+.splash .mark{width:112px;height:112px;animation:bloom 1s cubic-bezier(.2,.9,.25,1) both}
+.splash .wordmark{font-size:40px;margin-top:18px;animation:fadeup .6s .45s ease-out both}
+.splash-greet{font:italic 400 24px var(--serif);color:var(--taupe);min-height:1.4em;animation:fadeup .6s .8s ease-out both}
+@keyframes bloom{from{opacity:0;transform:rotate(-150deg) scale(.35)}to{opacity:1;transform:none}}
+@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.splash .mark,.splash .wordmark,.splash-greet,#view.enter,.check.pop,.check.pop .box{animation:none}}
+@media (min-width:960px){.links-nav a{font-size:16px;min-height:48px;justify-content:flex-start}}

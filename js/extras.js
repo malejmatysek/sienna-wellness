@@ -2,6 +2,10 @@
 (() => {
 const S = SIENNA, St = S.Store, t = S.t, e = x => S.esc(x), $ = s => document.querySelector(s);
 Object.assign(S.STRINGS.en, {
+ 'tour.more.x': 'Workouts, rest, your private cycle tracker, your journal and settings — all in one list.',
+ 'tour.more.t': 'More',
+ 'tour.nourish.x': 'Recipes for every meal. Search, save your favourites, or let us plan your day.',
+ 'tour.nourish.t': 'Nourish',
  'nav.settings': 'Settings', 'set.eyebrow': 'Make it yours', 'set.profile': 'Profile & preferences', 'set.name': 'Name', 'set.water': 'Daily water goal (glasses)',
  'set.reset': '30-Day Reset', 'set.start': 'Start date', 'set.restart': 'Restart the reset from Day 1', 'set.restartQ': 'Clear all 30-Day Reset progress and reflections and start again today?',
  'set.units': 'Units', 'unit.metric': 'Metric (L)', 'unit.imperial': 'Imperial (fl oz)',
@@ -15,10 +19,10 @@ Object.assign(S.STRINGS.en, {
  'lock.title': 'Private space', 'lock.pin': 'Enter your PIN', 'lock.open': 'Unlock', 'lock.bad': 'Incorrect PIN. Try again.',
  'intro.title': 'Welcome to Sienna', 'intro.text': 'Your calm space for movement, nourishment, recovery and care. Let us show you around — it takes less than a minute.', 'intro.tour': 'Take the tour', 'intro.skip': 'Not now', 'intro.hide': 'Don\'t show again',
  'tour.next': 'Next', 'tour.back': 'Back', 'tour.done': 'Finish', 'tour.skip': 'Skip', 'tour.step': 'Step {i} of {n}',
- 'tour.ring.t': 'Progress ring', 'tour.ring.x': 'Your daily balance at a glance. It fills as you complete today\'s rituals — there is no "failing" a day.',
- 'tour.check.t': 'Daily rituals', 'tour.check.x': 'Six small habits: Move, Nourish, Hydrate, Recover, Self-care and Reflect. They refresh every morning, and other sections tick them for you.',
- 'tour.water.t': 'Hydration', 'tour.water.x': 'Tap + for every glass. Reaching your goal ticks Hydrate automatically. Change the goal and units in Settings.',
- 'tour.reset.t': '30-Day Reset', 'tour.reset.x': 'Thirty days in four phases — Awaken, Nourish, Strengthen, Balance. Each day has 7 parts: focus, movement, nourish, hydration, self-care, mindset and a reflection. Missing a day never resets your progress.',
+ 'tour.ring.t': 'Today\'s progress', 'tour.ring.x': 'This circle fills up as you tick things off your list today.',
+ 'tour.check.t': 'Today\'s list', 'tour.check.x': 'Six small things for a good day. Tap one to tick it. The list starts fresh every morning.',
+ 'tour.water.t': 'Water', 'tour.water.x': 'Tap + each time you drink a glass of water.',
+ 'tour.reset.t': 'Reset', 'tour.reset.x': 'Your 30-day programme. Each day has a few small steps. If you miss a day, nothing is lost.',
  'tour.sections.t': 'Your sections', 'tour.sections.x': 'Movement builds workouts for your goal and level. Nutrition is the cookbook. Recovery has breathing, stretching and wind-down. My Journal tracks mood and energy.',
  'tour.cycle.t': 'Cycle', 'tour.cycle.x': 'Private, on-device cycle tracking. See your phase — menstrual, follicular, ovulatory or luteal — with movement, food and care tips, pain relief and when to see a doctor. Never uploaded.', 'tour.settings.t': 'Settings', 'tour.settings.x': 'Edit your preferences, set a PIN, make an encrypted backup and replay this tour any time.'
 });
@@ -64,7 +68,7 @@ async function exportBackup() {
   const ct = await C.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(St.get())));
   const blob = new Blob([JSON.stringify({ app: 'sienna-wellness', format: 1, kdf: 'PBKDF2-SHA256', iter, salt: b64(salt), iv: b64(iv), data: b64(ct), created: new Date().toISOString() })], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `sienna-backup-${S.dkey()}.sienna`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-  msg('bkmsg', t('set.exported'));
+  msg('bkmsg', t('set.exported')); S.toast(t('set.exported'));
 }
 async function importBackup() {
   const f = $('#bfile').files[0], pw = $('#bpw').value; if (!f) return msg('bkmsg', t('set.noFile'));
@@ -73,16 +77,16 @@ async function importBackup() {
     const key = await aesKey(pw, ub64(j.salt), j.iter), data = JSON.parse(dec.decode(await C.decrypt({ name: 'AES-GCM', iv: ub64(j.iv) }, key, ub64(j.data))));
     if (!data || typeof data !== 'object' || !('reset' in data)) throw 0;
     if (!confirm(t('set.importQ'))) return;
-    St.update(s => { Object.keys(s).forEach(k => delete s[k]); Object.assign(s, data); }); alert(t('set.imported'));
+    St.update(s => { Object.keys(s).forEach(k => delete s[k]); Object.assign(s, data); }); S.toast(t('set.imported'));
   } catch (err) { msg('bkmsg', t('set.importBad')); }
 }
 document.addEventListener('click', ev => {
   const b = ev.target.closest('[data-set],[data-act2]'); if (!b) return; const v = b.dataset.val;
-  if (b.dataset.set) { const g = b.dataset.set, val = g === 'time' || g === 'waterGoal' ? +v : v; St.update(s => { const p = s.profile; if (b.hasAttribute('data-multi')) { p[g] = p[g] || []; p[g] = p[g].includes(val) ? p[g].filter(x => x !== val) : [...p[g], val]; } else p[g] = val; }); return; }
+  if (b.dataset.set) { setTimeout(() => S.toast(t('toast.saved')), 0); const g = b.dataset.set, val = g === 'time' || g === 'waterGoal' ? +v : v; St.update(s => { const p = s.profile; if (b.hasAttribute('data-multi')) { p[g] = p[g] || []; p[g] = p[g].includes(val) ? p[g].filter(x => x !== val) : [...p[g], val]; } else p[g] = val; }); return; }
   const a = b.dataset.act2;
-  if (a === 'units') setCfg({ units: v });
+  if (a === 'units') { setCfg({ units: v }); S.toast(t('toast.saved')); }
   else if (a === 'restart') { if (confirm(t('set.restartQ'))) St.update(s => { s.reset = {}; s.profile.resetStart = S.dkey(); }); }
-  else if (a === 'pinoff') setCfg({ pin: null });
+  else if (a === 'pinoff') { setCfg({ pin: null }); S.toast(t('toast.saved')); }
   else if (a === 'tour') startTour(0);
   else if (a === 'export') exportBackup().catch(() => msg('bkmsg', t('set.importBad')));
   else if (a === 'import') importBackup();
@@ -90,15 +94,15 @@ document.addEventListener('click', ev => {
 });
 document.addEventListener('change', ev => {
   const id = ev.target.id;
-  if (id === 'sname' && ev.target.value.trim()) St.update(s => { s.profile.name = ev.target.value.trim(); });
-  if (id === 'sstart' && ev.target.value) St.update(s => { s.profile.resetStart = ev.target.value; });
+  if (id === 'sname' && ev.target.value.trim()) { St.update(s => { s.profile.name = ev.target.value.trim(); }); S.toast(t('toast.saved')); }
+  if (id === 'sstart' && ev.target.value) { St.update(s => { s.profile.resetStart = ev.target.value; }); S.toast(t('toast.saved')); }
   if (id === 'stour') setCfg({ hideTour: !ev.target.checked }, true);
   if (id === 'tourHide' || id === 'introHide') setCfg({ hideTour: ev.target.checked }, true);
 });
 document.addEventListener('submit', async ev => {
   if (ev.target.id === 'pinform') { ev.preventDefault(); const a = $('#pin1').value, b = $('#pin2').value;
     if (!/^\d{4,8}$/.test(a) || a !== b) return msg('pinmsg', t('set.pinBad'));
-    const salt = rnd(16); setCfg({ pin: { salt: b64(salt), hash: await pinHash(a, salt) } }); msg('pinmsg', t('set.pinSaved')); }
+    const salt = rnd(16); setCfg({ pin: { salt: b64(salt), hash: await pinHash(a, salt) } }); msg('pinmsg', t('set.pinSaved')); S.toast(t('set.pinSaved')); }
   if (ev.target.id === 'lockform') { ev.preventDefault(); const pin = cfg().pin, v = $('#lockpin').value;
     if (await pinHash(v, ub64(pin.salt)) === pin.hash) { unlocked = true; S.render(); } else { msg('lockmsg', t('lock.bad')); $('#lockpin').value = ''; } }
 });
@@ -115,7 +119,7 @@ function lock() {
 }
 
 /* ---------- Intro + guided tour ---------- */
-const STEPS = [['.ring-card', 'ring'], ['.checklist', 'check'], ['.water', 'water'], ['[data-nav=reset]', 'reset'], ['.links-nav', 'sections'], ['[data-nav=cycle]', 'cycle'], ['#gear', 'settings']];
+const STEPS = [['.ring-card', 'ring'], ['.checklist', 'check'], ['.water', 'water'], ['[data-nav=reset]', 'reset'], ['[data-nav=nutrition]', 'nourish'], ['[data-nav=more]', 'more']];
 let shown = false, layer = null, cur = 0;
 function overlay(html) { endTour(); layer = document.createElement('div'); layer.className = 'tour'; layer.innerHTML = html; document.body.appendChild(layer); return layer; }
 function endTour() { if (layer) layer.remove(); layer = null; }
@@ -149,5 +153,5 @@ document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && layer) e
 addEventListener('resize', place); addEventListener('scroll', place, { passive: true });
 St.subscribe(() => maybeIntro());
 S.startTour = startTour;
-S.render(); maybeIntro();
+S.render(); S.afterSplash(maybeIntro);
 })();

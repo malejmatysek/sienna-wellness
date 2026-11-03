@@ -13,7 +13,7 @@ Object.assign(S.STRINGS.en, {
 });
 const blank = () => ({ periods: [], len: 28, plen: 5, logs: {} });
 const C = () => St.get().cycle || blank();
-const upd = fn => St.update(s => { s.cycle = s.cycle || blank(); fn(s.cycle); });
+const upd = (fn, msg) => { St.update(s => { s.cycle = s.cycle || blank(); fn(s.cycle); }); S.toast(msg || t('toast.saved')); };
 const diff = (a, b) => Math.round((new Date(b + 'T12:00') - new Date(a + 'T12:00')) / 864e5);
 const add = (a, n) => { const d = new Date(a + 'T12:00'); d.setDate(d.getDate() + n); return S.dkey(d); };
 const fmt = k => new Date(k + 'T12:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
@@ -36,7 +36,7 @@ function cycle() {
   <button class="btn wide" data-cy="setup">${t('cy.save')}</button></section><p class="muted small">${t('cy.disclaimer')}</p>`;
   const P = CY.phases[s.phase], toNext = diff(today, s.next), pct = Math.min(1, s.day / s.len), R = 2 * Math.PI * 52;
   return head + `<section class="card cy-phase ${s.phase}"><div class="ring cy-ring"><svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" cx="60" cy="60" r="52" stroke-dasharray="${R}" stroke-dashoffset="${R * (1 - pct)}"/></svg><div class="ring-num"><span>${t('cy.day')}</span><b>${s.day}</b></div></div>
-  <div><h2 class="h2">${t('cy.phase', { p: P.name })}</h2><p class="muted">${e(P.text)}</p></div></section>
+  <div><h2 class="h2">${e(P.plain)}</h2><p class="eyebrow">${t('cy.phase', { p: P.name })}</p><p class="muted">${e(P.text)}</p></div></section>
   <p class="cy-next">${s.late > 0 ? t('cy.late', { n: s.late }) : toNext <= 0 ? t('cy.nextToday') : t('cy.next', { d: fmt(s.next), n: toNext })}</p>
   <div class="links">${s.open ? `<button class="btn ghost" data-cy="end">${t('cy.ended')}</button>` : ''}<button class="btn" data-cy="start">${t('cy.started')}</button></div>
   <section class="duo3">${['move', 'eat', 'care'].map(k => `<article class="card"><p class="eyebrow">${t('cy.' + k)}</p><p>${e(P[k])}</p></article>`).join('')}</section>

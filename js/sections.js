@@ -2,20 +2,20 @@
 (() => {
 const S = SIENNA, St = S.Store, t = S.t;
 Object.assign(S.STRINGS.en, {
- 'meal.all': 'All', 'meal.breakfast': 'Breakfast', 'meal.lunch': 'Lunch', 'meal.dinner': 'Dinner', 'meal.snack': 'Snack', 'tag.all': 'All tags', 'tag.fav': '♥ Favourites',
- 'nut.eyebrow': 'The Sienna cookbook', 'nut.lead': 'High-protein, whole-food recipes you will love eating — to feel strong, lean and energised. No diets, no suffering.',
+ 'meal.all': 'All', 'meal.breakfast': 'Breakfast', 'meal.lunch': 'Lunch', 'meal.dinner': 'Dinner', 'meal.snack': 'Snack', 'tag.all': 'All tags', 'tag.fav': '♥ Saved',
+ 'nut.eyebrow': 'The Sienna cookbook', 'nut.lead': 'Simple, high-protein meals made from real food. Feel full, strong and full of energy — no dieting.',
  'nut.pickTitle': 'What should I eat today?', 'nut.pickLead': 'A balanced day of meals, picked for you.', 'nut.pickBtn': 'Plan my day', 'nut.repick': 'Pick again', 'nut.planTotal': 'About {kcal} kcal · {p} g protein for the day',
  'nut.search': 'Search recipes or ingredients', 'nut.none': 'No recipes match — try another filter.', 'nut.protein': 'protein', 'nut.fav': 'Save to favourites', 'nut.count': '{n} recipes',
  'nut.ingredients': 'Ingredients', 'nut.steps': 'Method', 'nut.ate': 'I ate this today', 'nut.ated': 'Nourish ticked for today ✓', 'nut.min': 'minutes', 'nut.back': 'Cookbook',
- 'mov.eyebrow': 'Workout builder', 'mov.title': 'Movement', 'mov.lead': 'Choose your goal, time and level — get a session made for you today.',
+ 'mov.eyebrow': 'Workout builder', 'mov.title': 'Movement', 'mov.lead': 'Choose a goal, time and level. We make the workout for you.',
  'mov.goal': 'Goal', 'mov.time': 'Time', 'mov.level': 'Level', 'goal.sculpt': 'Tone & sculpt', 'goal.strength': 'Strength', 'goal.core': 'Core & Pilates', 'goal.cardio': 'Cardio burn', 'goal.mobility': 'Mobility',
  'lvl.1': 'Beginner', 'lvl.2': 'Intermediate', 'lvl.3': 'Advanced', 'mov.session': 'Your session', 'mov.warm': 'Warm-up · 3 min: marching, arm circles, hip rolls', 'mov.cool': 'Cool-down · 2 min: easy stretching and slow breaths',
  'mov.rounds': 'Repeat ×{n} rounds · {w}s work / {r}s rest', 'mov.shuffle': 'Shuffle', 'mov.done': 'Mark session done', 'mov.doneToday': 'Session done today — Move is ticked ✓', 'mov.history': 'Recent sessions', 'mov.noHistory': 'Your finished sessions will appear here.',
- 'rec.eyebrow': 'Rest is progress', 'rec.title': 'Recovery', 'rec.lead': 'Breathe, stretch and sleep better. Recovery is where your body gets stronger.',
+ 'rec.eyebrow': 'Rest is progress', 'rec.title': 'Recovery', 'rec.lead': 'Rest helps your body get stronger. Breathe, stretch and sleep well.',
  'rec.breath': 'Breathing timer', 'rec.breathLead': 'Inhale 4 · hold 4 · exhale 6', 'rec.start': 'Start', 'rec.stop': 'Stop', 'rec.in': 'Breathe in', 'rec.hold': 'Hold', 'rec.out': 'Breathe out', 'rec.ready': 'Ready when you are', 'rec.breathDone': 'Beautiful. Recover is ticked.',
  'rec.stretch': 'Stretch routines', 'rec.stretchDone': 'Done', 'rec.wind': 'Evening wind-down', 'rec.windLead': 'Ten calm minutes before sleep.', 'rec.windDone': 'Mark wind-down done', 'rec.windDoneOk': 'Wind-down done tonight ✓', 'rec.sleep': 'Sleep tips', 'rec.recovered': 'Recover is ticked for today ✓',
  'jr.eyebrow': 'A quiet place for you', 'jr.title': 'My Journal', 'jr.today': 'Today', 'jr.mood': 'Mood', 'jr.energy': 'Energy', 'jr.note': 'What is on your mind?', 'jr.save': 'Save entry', 'jr.saved': 'Saved — Reflect is ticked ✓',
- 'jr.chart': 'Your week', 'jr.history': 'Past entries', 'jr.none': 'Your entries will appear here.', 'jr.reflections': 'Reset reflections',
+ 'jr.chart': 'Your week', 'jr.history': 'Past entries', 'jr.weekLead': 'How many things you ticked off each day.', 'jr.none': 'Your entries will appear here.', 'jr.reflections': 'Reset reflections',
  'mood.1': 'Low', 'mood.2': 'Meh', 'mood.3': 'Okay', 'mood.4': 'Good', 'mood.5': 'Glowing', 'energy.1': 'Drained', 'energy.2': 'Tired', 'energy.3': 'Steady', 'energy.4': 'Energised', 'energy.5': 'Vibrant'
 });
 const e = x => S.esc(x), $ = s => document.querySelector(s), ic = (...a) => S.ic(...a);
@@ -30,7 +30,7 @@ const fmtDate = k => new Date(k + 'T12:00').toLocaleDateString('en-GB', { weekda
 /* ---------- Nutrition ---------- */
 const favs = () => St.get().favs || [];
 function rcard(x) { const f = favs().includes(x.id); return `<li class="card rcard"><a href="#/nutrition/${x.id}"><p class="eyebrow">${t('meal.' + x.meal)} · ${x.time} min</p><h3 class="h3">${e(x.title)}</h3><p class="meta">${x.kcal} kcal · ${x.protein} g ${t('nut.protein')}</p><p class="tags">${x.tags.map(e).join(' · ')}</p></a><button class="fav${f ? ' on' : ''}" data-act="fav" data-id="${x.id}" aria-pressed="${f}" aria-label="${t('nut.fav')}">${ic('heart')}</button></li>`; }
-function filtered() { const q = ui.q.toLowerCase(); return S.RECIPES.filter(x => (ui.meal === 'all' || x.meal === ui.meal) && (ui.tag === 'all' || (ui.tag === 'fav' ? favs().includes(x.id) : x.tags.includes(ui.tag))) && (!q || [x.title, x.text, ...x.ingredients, ...x.tags].join(' ').toLowerCase().includes(q))); }
+function filtered() { const q = ui.q.toLowerCase(); return S.RECIPES.filter(x => (ui.meal === 'all' || (ui.meal === 'fav' ? favs().includes(x.id) : x.meal === ui.meal)) && (!q || [x.title, x.text, ...x.ingredients, ...x.tags].join(' ').toLowerCase().includes(q))); }
 const rlist = () => { const l = filtered(); return `<p class="muted small">${t('nut.count', { n: l.length })}</p><ul class="rlist">${l.length ? l.map(rcard).join('') : `<li class="muted">${t('nut.none')}</li>`}</ul>`; };
 function planBlock() {
   const p = (St.get().plans || {})[today()];
@@ -45,7 +45,7 @@ function nutrition(r) {
   return `<header class="hero"><p class="eyebrow">${t('nut.eyebrow')}</p><h1 class="display">${t('nav.nutrition')}</h1><p class="lead">${t('nut.lead')}</p></header>
   <section class="card blush"><h2 class="h2">${t('nut.pickTitle')}</h2><p class="muted">${t('nut.pickLead')}</p>${planBlock()}</section>
   <section><input id="rq" class="input search" type="search" placeholder="${t('nut.search')}" value="${e(ui.q)}" aria-label="${t('nut.search')}">
-  ${chipRow('fmeal', ['all', ...MEALS], ui.meal, v => t('meal.' + v))}${chipRow('ftag', ['all', 'fav', ...tags], ui.tag, v => v === 'all' || v === 'fav' ? t('tag.' + v) : e(v))}
+  ${chipRow('fmeal', ['all', ...MEALS, 'fav'], ui.meal, v => v === 'fav' ? t('tag.fav') : t('meal.' + v))}
   <div id="rlist">${rlist()}</div></section>`;
 }
 function recipe(x) {
@@ -88,7 +88,7 @@ function recovery() {
   return `<header class="hero"><p class="eyebrow">${t('rec.eyebrow')}</p><h1 class="display">${t('rec.title')}</h1><p class="lead">${t('rec.lead')}</p>${rec ? `<p class="okmsg">${t('rec.recovered')}</p>` : ''}</header>
   <section class="card breath"><h2 class="h2">${t('rec.breath')}</h2><p class="muted">${t('rec.breathLead')}</p>
   <div class="bwrap"><div id="bcircle" class="bcircle"></div><p id="bphase" class="bphase" aria-live="polite">${t('rec.ready')}</p><p id="btime" class="muted small">${ui.bmin}:00</p></div>
-  ${chipRow('bmin', [1, 3, 5], ui.bmin, v => v + ' min')}<button class="btn wide" data-act="breath" id="bbtn">${t('rec.start')}</button></section>
+  ${chipRow('bmin', [1, 3, 5], ui.bmin, v => v + ' min')}<button class="btn wide" data-act="breath" id="bbtn">${t(ui.breath ? 'rec.stop' : 'rec.start')}</button></section>
   <section><h2 class="section-title">${t('rec.stretch')}</h2><div class="duo">${S.STRETCHES.map(x => `<article class="card"><h3 class="h3">${e(x.name)}</h3><p class="muted small">${Math.round(x.moves.reduce((a, m) => a + m[1], 0) / 60)} min</p><ol class="steps sm">${x.moves.map(m => `<li>${e(m[0])} · ${m[1]}s</li>`).join('')}</ol><button class="btn ghost wide" data-act="sdone" data-id="${x.id}">${t('rec.stretchDone')}</button></article>`).join('')}</div></section>
   <section class="card peach"><h2 class="h2">${t('rec.wind')}</h2><p class="muted">${t('rec.windLead')}</p><ul class="checklist">${S.WINDDOWN.map((w, i) => `<li><button class="check${wd[i] ? ' on' : ''}" role="checkbox" aria-checked="${!!wd[i]}" data-act="wstep" data-i="${i}"><span class="box">${ic('tick')}</span><span class="ct"><small>${e(w)}</small></span></button></li>`).join('')}</ul>
   ${wdone ? `<p class="okmsg">${t('rec.windDoneOk')}</p>` : `<button class="btn wide" data-act="wdown">${t('rec.windDone')}</button>`}</section>
@@ -101,7 +101,7 @@ function breath() {
   ui.breath = setInterval(() => {
     const el = $('#bphase'), c = $('#bcircle'); if (!el) return stopBreath();
     const s = (Date.now() - start) / 1000;
-    if (s >= total) { stopBreath(); tick('recover'); const p = $('#bphase'); if (p) p.textContent = t('rec.breathDone'); return; }
+    if (s >= total) { stopBreath(); tick('recover'); S.toast(t('rec.breathDone')); return; }
     const k = s % 14, ph = k < 4 ? 'in' : k < 8 ? 'hold' : 'out';
     el.textContent = t('rec.' + ph); c.className = 'bcircle' + (ph === 'out' ? '' : ' grow');
     const left = Math.ceil(total - s); $('#btime').textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
@@ -122,6 +122,7 @@ function journal() {
   <button class="btn wide" data-act="jsave"${ui.jm && ui.je ? '' : ' disabled'}>${t('jr.save')}</button>${ui.jsaved ? `<p class="okmsg">${t('jr.saved')}</p>` : ''}</section>
   <section class="card"><h2 class="h2">${t('jr.chart')}</h2><div class="jchart">${days.map(k => { const x = J[k] || {}; return `<div><div class="jbars"><i class="m" style="height:${(x.mood || 0) * 20}%"></i><i class="en" style="height:${(x.energy || 0) * 20}%"></i></div><span>${new Date(k + 'T12:00').toLocaleDateString('en-GB', { weekday: 'narrow' })}</span></div>`; }).join('')}</div>
   <p class="legend"><i class="m"></i>${t('jr.mood')} <i class="en"></i>${t('jr.energy')}</p></section>
+  <section class="card"><h2 class="h2">${t('home.week')}</h2><p class="muted small">${t('jr.weekLead')}</p><div class="week">${S.weekHTML()}</div></section>
   <section class="card"><h2 class="h2">${t('jr.history')}</h2>${keys.length ? `<ul class="hist">${keys.map(k => `<li><details><summary><span>${fmtDate(k)}</span><b>${t('mood.' + J[k].mood)} · ${t('energy.' + J[k].energy)}</b></summary><p>${e(J[k].note) || '—'}</p></details></li>`).join('')}</ul>` : `<p class="muted">${t('jr.none')}</p>`}</section>
   ${refl.length ? `<section class="card"><h2 class="h2">${t('jr.reflections')}</h2><ul class="hist">${refl.map(n => `<li><a href="#/reset/${n}"><span>${t('reset.day', { n })}</span><small>${e(St.get().reset[n].reflection.slice(0, 120))}</small></a></li>`).join('')}</ul></section>` : ''}`;
 }
@@ -129,19 +130,19 @@ function journal() {
 S.VIEWS = { nutrition, movement, recovery, journal };
 document.addEventListener('click', ev => {
   const b = ev.target.closest('[data-act]'); if (!b) return; const a = b.dataset.act, v = b.dataset.val;
-  if (a === 'fav') St.update(s => { s.favs = s.favs || []; const i = s.favs.indexOf(b.dataset.id); i < 0 ? s.favs.push(b.dataset.id) : s.favs.splice(i, 1); });
+  if (a === 'fav') { let added; St.update(s => { s.favs = s.favs || []; const i = s.favs.indexOf(b.dataset.id); added = i < 0; added ? s.favs.push(b.dataset.id) : s.favs.splice(i, 1); }); S.toast(added ? 'Saved to favourites ♥' : 'Removed from favourites'); }
   else if (a === 'fmeal') { ui.meal = v; S.render(); } else if (a === 'ftag') { ui.tag = v; S.render(); }
   else if (a === 'pick') St.update(s => { s.plans = s.plans || {}; const p = {}; MEALS.forEach(m => { const pool = S.RECIPES.filter(x => x.meal === m); p[m] = pool[Math.floor(Math.random() * pool.length)].id; }); s.plans[today()] = p; });
-  else if (a === 'ate') tick('nourish');
+  else if (a === 'ate') { tick('nourish'); S.toast('Nourish ticked ✓'); }
   else if (a === 'mgoal') { ui.goal = v; S.render(); } else if (a === 'mtime') { ui.time = +v; S.render(); } else if (a === 'mlevel') { ui.level = +v; S.render(); }
   else if (a === 'shuffle') { ui.seed++; S.render(); }
-  else if (a === 'wdone') { const s = build(); St.update(st => { st.workouts = st.workouts || []; st.workouts.push({ date: today(), at: Date.now(), goal: ui.goal, time: ui.time, level: ui.level, ids: s.picks.map(x => x.id) }); }); tick('move'); }
+  else if (a === 'wdone') { const s = build(); St.update(st => { st.workouts = st.workouts || []; st.workouts.push({ date: today(), at: Date.now(), goal: ui.goal, time: ui.time, level: ui.level, ids: s.picks.map(x => x.id) }); }); tick('move'); S.toast('Workout saved ✓'); }
   else if (a === 'bmin') { if (!ui.breath) { ui.bmin = +v; S.render(); } } else if (a === 'breath') breath();
-  else if (a === 'sdone') { St.update(s => { s.stretchLog = s.stretchLog || []; s.stretchLog.push({ date: today(), id: b.dataset.id }); }); tick('recover'); }
+  else if (a === 'sdone') { St.update(s => { s.stretchLog = s.stretchLog || []; s.stretchLog.push({ date: today(), id: b.dataset.id }); }); tick('recover'); S.toast('Rest ticked ✓'); }
   else if (a === 'wstep') St.update(s => { s.wind = s.wind || {}; const w = s.wind[today()] = s.wind[today()] || []; w[b.dataset.i] = !w[b.dataset.i]; });
-  else if (a === 'wdown') { St.update(s => { s.windDone = s.windDone || {}; s.windDone[today()] = true; }); tick('recover'); }
+  else if (a === 'wdown') { St.update(s => { s.windDone = s.windDone || {}; s.windDone[today()] = true; }); tick('recover'); S.toast('Rest ticked ✓'); }
   else if (a === 'jmood') { ui.jm = +v; S.render(); } else if (a === 'jenergy') { ui.je = +v; S.render(); }
-  else if (a === 'jsave') { St.update(s => { s.journal = s.journal || {}; s.journal[today()] = { mood: ui.jm, energy: ui.je, note: ui.jn, at: Date.now() }; }); ui.jsaved = true; tick('journal'); }
+  else if (a === 'jsave') { St.update(s => { s.journal = s.journal || {}; s.journal[today()] = { mood: ui.jm, energy: ui.je, note: ui.jn, at: Date.now() }; }); ui.jsaved = true; tick('journal'); S.toast(t('toast.saved')); }
 });
 document.addEventListener('input', ev => {
   if (ev.target.id === 'rq') { ui.q = ev.target.value; $('#rlist').innerHTML = rlist(); }
