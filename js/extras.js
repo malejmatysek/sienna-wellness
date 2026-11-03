@@ -135,15 +135,19 @@ function step(i) {
   overlay(`<div class="tour-spot"></div><div class="tour-tip" role="dialog" aria-modal="true" aria-labelledby="tipT"><p class="eyebrow">${t('tour.step', { i: i + 1, n: STEPS.length })}</p><h3 class="h3" id="tipT">${t('tour.' + k + '.t')}</h3><p>${t('tour.' + k + '.x')}</p>
   ${i === STEPS.length - 1 ? `<label class="toggle"><input type="checkbox" id="tourHide"${cfg().hideTour ? ' checked' : ''}> ${t('intro.hide')}</label>` : ''}
   <div class="tour-btns"><button class="tlink" data-tour="end">${t('tour.skip')}</button>${i ? `<button class="btn ghost sm" data-tour="back">${t('tour.back')}</button>` : ''}<button class="btn sm" data-tour="next">${t(i === STEPS.length - 1 ? 'tour.done' : 'tour.next')}</button></div></div>`);
-  setTimeout(place, 320); layer.querySelector('[data-tour=next]').focus();
+  const sp0 = layer.querySelector('.tour-spot'), tp0 = layer.querySelector('.tour-tip');
+  if (lastPos) { Object.assign(sp0.style, lastPos.sp); tp0.style.top = lastPos.top; } else tp0.style.visibility = 'hidden';
+  requestAnimationFrame(place); setTimeout(place, 320); layer.querySelector('[data-tour=next]').focus();
 }
 function place() {
   if (!layer || !layer.querySelector('.tour-spot')) return; const el = $(STEPS[cur][0]); if (!el) return;
   const r = el.getBoundingClientRect(), sp = layer.querySelector('.tour-spot'), tip = layer.querySelector('.tour-tip'), pad = 8;
   Object.assign(sp.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + pad * 2 + 'px', height: r.height + pad * 2 + 'px' });
   const th = tip.offsetHeight, below = r.bottom + pad + 14;
-  tip.style.top = (below + th < innerHeight - 10 ? below : Math.max(10, r.top - pad - 14 - th)) + 'px';
+  tip.style.top = (below + th < innerHeight - 10 ? below : Math.max(10, r.top - pad - 14 - th)) + 'px'; tip.style.visibility = '';
+  lastPos = { sp: { left: sp.style.left, top: sp.style.top, width: sp.style.width, height: sp.style.height }, top: tip.style.top };
 }
+let lastPos = null;
 document.addEventListener('click', ev => {
   const b = ev.target.closest('[data-tour]'); if (!b) return; const a = b.dataset.tour;
   if (a === 'start') step(0); else if (a === 'end') endTour();
