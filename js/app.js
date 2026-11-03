@@ -50,13 +50,13 @@ function home() {
   <h1 class="display">${greet},<br><em>${esc(p.name)}</em></h1><a class="pill" href="#/reset/${rd}">${ic('reset')}<span>${t('home.resetDay', { n: rd })}</span></a></header>
   <section class="card ring-card"><div class="ring" role="img" aria-label="${t('home.progressAria', { pct })}"><svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" cx="60" cy="60" r="52" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - done / 6)}"/></svg><div class="ring-num"><b>${pct}<small>%</small></b><span>${t('home.today')}</span></div></div>
   <div><h2 class="h2">${t('home.ringTitle')}</h2><p class="muted">${t(done === 6 ? 'home.ringDone' : 'home.ringText', { done, total: 6 })}</p></div></section>
-  <section><h2 class="section-title">${t('home.checklist')}</h2><ul class="checklist">${S.CHECKLIST.map(c => checkBtn(`data-check="${c.id}"`, d.checks[c.id], t('check.' + c.id), t('check.' + c.id + '.sub'), c.icon)).join('')}</ul></section>
+  <section><h2 class="section-title">${t('home.checklist')}</h2><p class="quick"><a href="#/movement">${t('nav.movement')}</a><a href="#/nutrition">${t('nav.nutrition')}</a><a href="#/recovery">${t('nav.recovery')}</a><a href="#/journal">${t('nav.journal')}</a><a href="#/reset/${rd}">${t('nav.reset')}</a></p><ul class="checklist">${S.CHECKLIST.map(c => checkBtn(`data-check="${c.id}"`, d.checks[c.id], t('check.' + c.id), t('check.' + c.id + '.sub'), c.icon)).join('')}</ul></section>
   <section class="card water"><div class="row"><div><h2 class="h2">${t('home.hydration')}</h2><p class="muted">${t('home.glasses', { n: d.water, goal })}</p></div>
   <div class="stepper"><button class="round" data-water="-1" aria-label="${t('home.waterLess')}"${d.water <= 0 ? ' disabled' : ''}>−</button><button class="round dark" data-water="1" aria-label="${t('home.waterMore')}">+</button></div></div>
   <div class="drops">${range(1, Math.max(goal, d.water)).map(i => `<span class="${i <= d.water ? 'full' : ''}">${ic('drop')}</span>`).join('')}</div></section>
   <section><h2 class="section-title">${t('home.forToday')}</h2><div class="duo">
-  <article class="card feature peach"><p class="eyebrow">${t('home.meal')} · ${esc(meal.type)}</p><h3 class="h3">${esc(meal.title)}</h3><p>${esc(meal.text)}</p><p class="meta">${meal.time} min · ${meal.tags.map(esc).join(' · ')}</p></article>
-  <article class="card feature blush"><p class="eyebrow">${t('home.move')} · ${esc(mv.kind)}</p><h3 class="h3">${esc(mv.title)}</h3><p>${esc(mv.text)}</p><p class="meta">${mv.minutes} min · ${esc(mv.level)}</p></article></div></section>
+  <a class="card feature peach" href="#/nutrition/${meal.id}"><p class="eyebrow">${t('home.meal')} · ${esc(meal.type)}</p><h3 class="h3">${esc(meal.title)}</h3><p>${esc(meal.text)}</p><p class="meta">${meal.time} min · ${meal.tags.map(esc).join(' · ')}</p></a>
+  <a class="card feature blush" href="#/movement"><p class="eyebrow">${t('home.move')} · ${esc(mv.kind)}</p><h3 class="h3">${esc(mv.title)}</h3><p>${esc(mv.text)}</p><p class="meta">${mv.minutes} min · ${esc(mv.level)}</p></a></div></section>
   <section class="card"><h2 class="h2">${t('home.week')}</h2><div class="week">${week()}</div></section>`;
 }
 function resetView() {
@@ -99,7 +99,7 @@ function render() {
   const focusSel = document.activeElement && ['data-check', 'data-task', 'data-water'].map(a => document.activeElement.hasAttribute(a) ? `[${a}="${document.activeElement.getAttribute(a)}"]` : '').join('');
   document.body.classList.toggle('onboarding', !s.profile);
   if (!s.profile) { view.innerHTML = onboarding(); return; }
-  view.innerHTML = sec === 'reset' ? (r[1] ? dayView(Math.min(30, Math.max(1, +r[1] || 1))) : resetView()) : ['movement', 'nutrition', 'recovery', 'journal'].includes(sec) ? soon(sec) : home();
+  view.innerHTML = sec === 'reset' ? (r[1] ? dayView(Math.min(30, Math.max(1, +r[1] || 1))) : resetView()) : S.VIEWS && S.VIEWS[sec] ? S.VIEWS[sec](r) : home();
   document.querySelectorAll('[data-nav]').forEach(a => a.setAttribute('aria-current', a.dataset.nav === sec || (sec === 'home' && a.dataset.nav === 'home') ? 'page' : 'false'));
   if (focusSel) { const el = view.querySelector(focusSel); el && el.focus(); }
 }
@@ -120,6 +120,7 @@ document.addEventListener('input', e => {
   clearTimeout(saveT); saveT = setTimeout(() => { const el = $('#saved'); if (el) el.textContent = t('reset.saved'); }, 400);
 });
 window.addEventListener('hashchange', () => { render(); window.scrollTo(0, 0); });
+Object.assign(S, { esc, ic, dkey, setDay, range, render, curDay });
 St.init(); St.subscribe(render);
 $('#nav').innerHTML = `<a class="brand" href="#/home" aria-label="Sienna Wellness">${MARK}<span class="wordmark">SIENNA</span></a><div class="links-nav">${NAV.map(([id, icon]) => `<a href="#/${id}" data-nav="${id}">${ic(icon)}<span>${t('nav.' + id)}</span></a>`).join('')}</div>`;
 document.documentElement.lang = S.lang;
