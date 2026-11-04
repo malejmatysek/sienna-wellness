@@ -72,7 +72,9 @@ const res = []; const ok = (name, cond, info = '') => { res.push([name, !!cond])
     // Movement
     await go('#/movement'); await p.click('[data-act=mgoal][data-val=core]'); await p.click('[data-act=mtime][data-val="30"]'); await p.click('[data-act=mlevel][data-val="1"]');
     const beg = await txt('.ex'); await p.click('[data-act=mlevel][data-val="3"]'); const adv = await txt('.ex');
-    ok('builder: 6 exercises, advanced differs', await cnt('.ex li') === 6 && beg !== adv);
+    ok('builder: reps/holds shown, advanced differs', (await cnt('.ex > li')) >= 3 && (await txt('.ex')).includes('hold') && beg !== adv);
+    await p.click('[data-act=mwhere][data-val=gym]'); await p.click('[data-act=mgoal][data-val=muscle]'); ok('gym: machines + sets×reps', (await txt('.ex')).includes('Use:') && /\d × 8–12 reps/.test(await txt('.ex')) && await p.evaluate(() => localStorage.getItem('sienna:where')) === 'gym');
+    await p.click('[data-act=mgoal][data-val=core]');
     await p.click('[data-act=shuffle]'); ok('shuffle changes session', (await txt('.ex')) !== adv);
     await p.click('[data-act=wdone]'); ok('workout done → history', await cnt('.hist li') === 1 && (await toast()).includes('Workout'));
     // Recovery
