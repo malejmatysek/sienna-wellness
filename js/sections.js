@@ -8,8 +8,8 @@ Object.assign(S.STRINGS.en, {
  'nut.search': 'Search recipes or ingredients', 'nut.none': 'No recipes match — try another filter.', 'nut.protein': 'protein', 'nut.fav': 'Save to favourites', 'nut.count': '{n} recipes',
  'nut.ingredients': 'Ingredients', 'nut.steps': 'Method', 'nut.ate': 'I ate this today', 'nut.ated': 'Eat well ticked for today ✓', 'nut.min': 'minutes', 'nut.back': 'Cookbook',
  'mov.eyebrow': 'Workout builder', 'mov.title': 'Movement', 'mov.lead': 'Choose where, goal, time and level. We make the workout for you.', 'mov.where': 'Where', 'where.home': 'Home (no equipment)', 'where.gym': 'Gym', 'mov.load': 'Choose a weight where the last 1–2 reps feel hard but your form stays clean.', 'mov.loadHome': 'Move slowly (3 s down) and go close to failure: the last 1–2 reps should feel hard, form stays clean.', 'mov.sets': '{s} × {r} reps · rest {rest} s', 'mov.holds': '{s} × {h} s hold · rest {rest} s', 'mov.perside': ' / side', 'mov.use': 'Use: {eq}',
- 'mov.goal': 'Goal', 'mov.time': 'Time', 'mov.level': 'Level', 'goal.sculpt': 'Tone & endurance', 'goal.muscle': 'Build & tone', 'goal.strength': 'Strength', 'goal.core': 'Core & Pilates', 'goal.cardio': 'Cardio burn', 'goal.mobility': 'Mobility',
- 'lvl.1': 'Beginner', 'lvl.2': 'Intermediate', 'lvl.3': 'Advanced', 'mov.session': 'Your session', 'mov.warm': 'Warm-up · 3 min: marching, arm circles, hip rolls', 'mov.cool': 'Cool-down · 2 min: easy stretching and slow breaths',
+ 'mov.goal': 'Goal', 'mov.time': 'Time', 'mov.level': 'Level', 'goal.sculpt': 'Tone', 'goal.muscle': 'Build & tone', 'goal.full': 'Full body', 'goal.legs': 'Legs & booty', 'goal.upper': 'Upper body', 'goal.core': 'Core', 'goal.yoga': 'Yoga & mobility', 'goal.cardio': 'Cardio', 'goal.strength': 'Strength',  'goal.mobility': 'Mobility',
+ 'lvl.1': 'Beginner', 'lvl.2': 'Intermediate', 'lvl.3': 'Advanced', 'mov.session': 'Your session', 'mov.warm': 'Warm-up 3 min + 1 light set of the first move', 'mov.cool': 'Cool-down · 2 min: easy stretching and slow breaths',
  'mov.rounds': 'Repeat ×{n} rounds · {w}s work / {r}s rest', 'mov.shuffle': 'Shuffle', 'mov.done': 'Mark session done', 'mov.doneToday': 'Session done today — Move is ticked ✓', 'mov.history': 'Recent sessions', 'mov.noHistory': 'Your finished sessions will appear here.',
  'rec.eyebrow': 'Rest is progress', 'rec.title': 'Recovery', 'rec.lead': 'Rest helps your body get stronger. Breathe, stretch and sleep well.',
  'rec.breath': 'Breathing timer', 'rec.breathLead': 'Inhale 4 · hold 4 · exhale 6', 'rec.start': 'Start', 'rec.stop': 'Stop', 'rec.in': 'Breathe in', 'rec.hold': 'Hold', 'rec.out': 'Breathe out', 'rec.ready': 'Ready when you are', 'rec.breathDone': 'Beautiful. Recover is ticked.',
@@ -22,16 +22,16 @@ const e = x => S.esc(x), $ = s => document.querySelector(s), ic = (...a) => S.ic
 const today = () => S.dkey(), d0 = () => St.get().days[today()] || { checks: {} };
 const tick = id => S.setDay(d => { d.checks[id] = true; });
 const MEALS = ['breakfast', 'lunch', 'dinner', 'snack'];
-const ui = { meal: 'all', tag: 'all', q: '', where: localStorage.getItem('sienna:where') || 'home', goal: 'muscle', time: 20, level: 1, seed: 1, bmin: 3, breath: null };
+const ui = { meal: 'all', tag: 'all', q: '', where: localStorage.getItem('sienna:where') || 'home', goal: 'full', time: 20, level: 1, seed: 1, bmin: 3, breath: null };
 const chipRow = (act, vals, cur, label) => `<div class="chips scroll">${vals.map(v => `<button type="button" class="chip${String(cur) === String(v) ? ' on' : ''}" aria-pressed="${String(cur) === String(v)}" data-act="${act}" data-val="${v}">${label(v)}</button>`).join('')}</div>`;
 const shuffle = (arr, seed) => { const a = [...arr]; let x = seed * 7919 % 233280; for (let i = a.length - 1; i > 0; i--) { x = (x * 9301 + 49297) % 233280; const j = Math.floor(x / 233280 * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const fmtDate = k => new Date(k + 'T12:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 
 /* ---------- Nutrition ---------- */
 const favs = () => St.get().favs || [];
-function rcard(x) { const f = favs().includes(x.id); return `<li class="card rcard"><a href="#/nutrition/${x.id}"><p class="eyebrow">${t('meal.' + x.meal)} · ${x.time} min</p><h3 class="h3">${e(x.title)}</h3><p class="meta">${x.kcal} kcal · ${x.protein} g ${t('nut.protein')}</p><p class="tags">${x.tags.map(e).join(' · ')}</p></a><button class="fav${f ? ' on' : ''}" data-act="fav" data-id="${x.id}" aria-pressed="${f}" aria-label="${t('nut.fav')}">${ic('heart')}</button></li>`; }
+function rcard(x) { const f = favs().includes(x.id); return `<li class="card rcard"><details><summary><b class="rt">${e(x.title)}</b><span class="meta">${x.time} min · ${x.kcal} kcal · ${x.protein} g ${t('nut.protein')}</span></summary><div class="rbody"><p class="muted small">${e(x.text)}</p><ul class="ing">${x.ingredients.map(i => `<li>${e(i)}</li>`).join('')}</ul><ol class="steps sm">${x.steps.map(i => `<li>${e(i)}</li>`).join('')}</ol><a class="tlink" href="#/nutrition/${x.id}">Open recipe →</a></div></details><button class="fav${f ? ' on' : ''}" data-act="fav" data-id="${x.id}" aria-pressed="${f}" aria-label="${t('nut.fav')}">${ic('heart')}</button></li>`; }
 function filtered() { const q = ui.q.toLowerCase(); return S.RECIPES.filter(x => (ui.meal === 'all' || (ui.meal === 'fav' ? favs().includes(x.id) : x.meal === ui.meal)) && (!q || [x.title, x.text, ...x.ingredients, ...x.tags].join(' ').toLowerCase().includes(q))); }
-const rlist = () => { const l = filtered(); return `<p class="muted small">${t('nut.count', { n: l.length })}</p><ul class="rlist">${l.length ? l.map(rcard).join('') : `<li class="muted">${t('nut.none')}</li>`}</ul>`; };
+const rlist = () => { const l = filtered(); return `<ul class="rlist">${l.length ? l.map(rcard).join('') : `<li class="muted">${t('nut.none')}</li>`}</ul>`; };
 function planBlock() {
   const p = (St.get().plans || {})[today()];
   if (!p) return `<button class="btn wide" data-act="pick">${t('nut.pickBtn')}</button>`;
@@ -42,8 +42,8 @@ function planBlock() {
 function nutrition(r) {
   if (r[1]) return recipe(S.RECIPES.find(x => x.id === r[1]) || S.RECIPES[0]);
   const tags = [...new Set(S.RECIPES.flatMap(x => x.tags))];
-  return `<header class="hero"><p class="eyebrow">${t('nut.eyebrow')}</p><h1 class="display">${t('nav.nutrition')}</h1><p class="lead">${t('nut.lead')}</p></header>
-  <section class="card blush"><h2 class="h2">${t('nut.pickTitle')}</h2><p class="muted">${t('nut.pickLead')}</p>${planBlock()}</section>
+  return `<header class="hero"><h1 class="display">${t('nav.nutrition')}</h1></header>
+  <section class="card blush"><h2 class="h2">${t('nut.pickTitle')}</h2>${planBlock()}</section>
   <section><input id="rq" class="input search" type="search" placeholder="${t('nut.search')}" value="${e(ui.q)}" aria-label="${t('nut.search')}">
   ${chipRow('fmeal', ['all', ...MEALS, 'fav'], ui.meal, v => v === 'fav' ? t('tag.fav') : t('meal.' + v))}
   <div id="rlist">${rlist()}</div></section>`;
@@ -51,7 +51,7 @@ function nutrition(r) {
 function recipe(x) {
   const f = favs().includes(x.id), ate = d0().checks.nourish;
   return `<a class="back" href="#/nutrition">← ${t('nut.back')}</a>
-  <header class="hero"><p class="eyebrow">${t('meal.' + x.meal)}</p><h1 class="display">${e(x.title)}</h1><p class="lead">${e(x.text)}</p></header>
+  <header class="hero keep"><p class="eyebrow">${t('meal.' + x.meal)}</p><h1 class="display">${e(x.title)}</h1><p class="lead">${e(x.text)}</p></header>
   <div class="stats"><div><b>${x.time}</b><span>${t('nut.min')}</span></div><div><b>${x.kcal}</b><span>kcal</span></div><div><b>${x.protein} g</b><span>${t('nut.protein')}</span></div></div>
   <p class="tags">${x.tags.map(e).join(' · ')}</p>
   <div class="links"><button class="btn ghost" data-act="fav" data-id="${x.id}" aria-pressed="${f}">${f ? '♥ Saved' : '♡ ' + t('nut.fav')}</button><button class="btn" data-act="ate"${ate ? ' disabled' : ''}>${ate ? t('nut.ated') : t('nut.ate')}</button></div>
@@ -60,43 +60,72 @@ function recipe(x) {
 }
 
 /* ---------- Movement ---------- */
-// Evidence-based dosing (ACSM 2009; Schoenfeld 2017/2021): sets by level, reps, rest seconds.
-const RX = { strength: { sets: [3, 4, 4], reps: [4, 6], rest: 150, restHome: 90, homeReps: [6, 10] }, muscle: { sets: [3, 3, 4], reps: [8, 12], rest: 75, homeReps: [10, 15] },
-  sculpt: { sets: [2, 3, 3], reps: [12, 15], rest: 50 }, core: { sets: [2, 3, 3], reps: [10, 15], rest: 45, hold: [20, 30, 45] }, mobility: { sets: [2, 2, 2], reps: [8, 10], rest: 20, hold: [30, 45, 60] } };
+// Coach logic (ACSM 2009 progression model; Schoenfeld 2017/2021): compounds first, accessories next, core last.
+const COMPOUND = ['squat', 'hinge', 'glute', 'lunge', 'push', 'pull', 'vpush', 'vpull'];
+const PLAN = {
+  full: ['squat', 'hinge|glute', 'push', 'pull|vpull', 'core', 'lunge', 'vpush|push', 'vpull|pull', 'glute|hinge', 'core', 'pullacc|shoulders', 'arms', 'gluteacc'],
+  legs: ['squat', 'glute', 'hinge', 'lunge', 'gluteacc', 'legacc|gluteacc', 'lunge|squat', 'gluteacc', 'calf', 'core'],
+  upper: ['push', 'pull', 'vpush|push', 'vpull|pull', 'shoulders|pullacc', 'arms', 'arms', 'pullacc', 'push', 'core'],
+  core: ['core', 'core', 'core', 'core', 'core', 'pullacc', 'core', 'core', 'core', 'core']
+};
+// [sets, reps, rest] by level for compound / accessory; core reps or hold seconds
+const DOSE = { 1: { c: [2, '12–15', 60], a: [2, '12–15', 45], k: [2, '10–12', 30, 20] }, 2: { c: [3, '10–12', 75], a: [3, '12', 60], k: [3, '12', 40, 30] }, 3: { c: [4, '6–10', 120], a: [3, '10–12', 60], k: [3, '15', 45, 45] } };
+const TIPS = { full: 'Big lifts first while you are fresh. Rest fully between sets.', legs: 'Push through your heels and pause 1 s at the top of every glute move.', upper: 'Shoulder blades back and down on every press and row.', core: 'Ribs down and breathe out on the effort. Quality over speed.', yoga: 'Move with your breath. Never force a stretch.', cardio: 'Work hard, then really rest. Low-impact options are fine.' };
 function build() {
-  const lv = ui.level, g = ui.goal, ok = S.EXERCISES.filter(x => x.level <= lv && (x.where === ui.where || (ui.where === 'gym' && ['core', 'cardio', 'mobility'].includes(g) && x.where === 'home')));
-  const fit = ok.filter(x => x.goals.includes(g));
-  let picks = shuffle(fit.filter(x => x.where === ui.where), ui.seed + lv * 13).concat(shuffle(fit.filter(x => x.where !== ui.where), ui.seed));
-  if (lv > 1) picks.sort((a, b) => (a.where === ui.where ? 0 : 1) - (b.where === ui.where ? 0 : 1) || b.level - a.level);
-  const main = ui.time * 60 - 300;
-  if (g === 'cardio') {
-    const n = ui.time <= 10 ? 4 : ui.time <= 20 ? 5 : 6, [w, r] = [[30, 30], [40, 20], [45, 15]][lv - 1];
-    picks = picks.slice(0, n); return { picks, w, r, rounds: Math.max(1, Math.round(main / (n * (w + r)))) };
+  const lv = ui.level, g = ui.goal, rnd = (l, k = 0) => shuffle(l, ui.seed * 7 + lv * 13 + k), short = ui.time <= 10;
+  const pool = S.EXERCISES.filter(x => x.level <= lv && (g === 'yoga' ? x.where === 'yoga' : x.where !== 'yoga' && (x.where === ui.where || (ui.where === 'gym' && x.where === 'home' && !COMPOUND.includes(x.pat) || (ui.where === 'gym' && ['lunge'].includes(x.pat) && x.where === 'home')))));
+  const pref = l => lv === 1 ? l.sort((a, b) => a.level - b.level) : l.sort((a, b) => b.level - a.level || (a.where === ui.where ? -1 : 1));
+  if (g === 'yoga') {
+    const br = [5, 7, 9][lv - 1], secs = x => br * 5 * (x.side ? 2 : 1) + 10, main = ui.time * 60;
+    const last = pool.find(x => x.id === 'y-savasana'), rest = rnd(pool.filter(x => x !== last));
+    const picks = []; let used = secs(last);
+    for (const x of rest) if (used + secs(x) <= main) { picks.push(x); used += secs(x); }
+    picks.sort((a, b) => a.stage - b.stage); picks.push(last);
+    return { picks, rx: x => x.id === 'y-savasana' ? Math.max(2, Math.round((main - used) / 60) + 2) + ' min' : `${br} breaths${x.side ? ' / side' : ''}`, est: ui.time };
   }
-  const rx = RX[g], home = ui.where === 'home', reps = home && rx.homeReps ? rx.homeReps : rx.reps, rest = home && rx.restHome ? rx.restHome : rx.rest;
-  const sets = rx.sets[lv - 1];
-  const work = x => x.hold ? (rx.hold || [20, 30, 40])[lv - 1] : Math.round((reps[0] + reps[1]) / 2 * (home && g !== 'sculpt' ? 4.5 : 3.5));
-  const per = sets * (40 + rest) + 30;
-  let n = Math.max(3, Math.min(8, Math.round(main / per)));
-  picks = picks.slice(0, n);
-  return { picks, sets, reps, rest, home, rx, work };
+  if (g === 'cardio') {
+    const n = { 10: 4, 20: 5, 30: 6, 45: 8, 60: 8 }[ui.time], [w, r] = [[30, 30], [40, 20], [45, 15]][lv - 1], cand = rnd(pool.filter(x => x.pat === 'cardio'));
+    const lo = cand.filter(x => !x.jump), hi = cand.filter(x => x.jump), picks = [];
+    while (picks.length < n && (lo.length || hi.length)) { const x = (picks.length % 2 ? hi.shift() : lo.shift()) || lo.shift() || hi.shift(); picks.push(x); }
+    const rounds = Math.max(2, Math.round((ui.time * 60 - 300) / (picks.length * (w + r) + 60)));
+    return { picks, rounds, w, r, est: Math.round((300 + rounds * (picks.length * (w + r) + 60)) / 60) };
+  }
+  const D = DOSE[lv], dose = x => x.pat === 'core' ? D.k : COMPOUND.includes(x.pat) ? D.c : D.a;
+  const scale = d => short ? [2, d[1], Math.round(d[2] * .6), d[3]] : ui.time <= 20 ? [Math.min(d[0], 2), d[1], d[2], d[3]] : ui.time >= 60 ? [d[0] + (d === D.k ? 0 : 1), d[1], d[2], d[3]] : d;
+  const secOf = x => { const d = scale(dose(x)); return d[0] * (45 * (x.side ? 1.6 : 1) + d[2]) + 30; };
+  const main = ui.time * 60 - (short ? 180 : 300), plan = PLAN[g], picks = [], used = new Set();
+  const pick = slot => { for (const pt of slot.split('|')) { const x = pref(rnd(pool.filter(y => y.pat === pt && !used.has(y.id)), picks.length))[0]; if (x) return x; } };
+  let t = 0;
+  for (let i = 0; i < plan.length; i++) {
+    const x = pick(plan[i]); if (!x) continue;
+    const need = g === 'full' ? 5 : 3;
+    if (picks.length >= need && t + secOf(x) > main * 1.08) break;
+    picks.push(x); used.add(x.id); t += secOf(x);
+  }
+  const rank = x => x.pat === 'core' ? 2 : COMPOUND.includes(x.pat) ? 0 : 1;
+  if (g !== 'core') picks.sort((a, b) => rank(a) - rank(b));
+  const home = ui.where === 'home';
+  return { picks, est: Math.max(ui.time - 5, Math.round((t + (short ? 180 : 300)) / 60)), rx: x => { const [sets, reps, rest, hold] = scale(dose(x)); return `${sets} × ${x.hold ? hold + ' s' : reps}${x.side ? ' / side' : ''} · rest ${rest} s`; }, home };
 }
+const exRow = (x, rx) => `<li><details class="exd"><summary><b>${e(x.name)}</b><span class="rx">${rx}</span></summary><div class="howbody"><p class="muted small">${e(x.cue)}${x.eq ? ' · ' + e(x.eq) : ''}</p>${(h => h ? `<p><b>${t('mov.works')}</b> ${e(h.works)}</p><ol>${h.steps.map(z => `<li>${e(z)}</li>`).join('')}</ol><p><b>${t('mov.easier')}</b> ${e(h.easier)}</p>` : '')((S.HOWTO || {})[x.id])}</div></details></li>`;
 function movement() {
-  const s = build(), hist = (St.get().workouts || []).slice(-5).reverse(), done = (St.get().workouts || []).some(x => x.date === today());
-  return `<header class="hero"><p class="eyebrow">${t('mov.eyebrow')}</p><h1 class="display">${t('mov.title')}</h1><p class="lead">${t('mov.lead')}</p></header>
-  <section class="card"><h2 class="label">${t('mov.where')}</h2>${chipRow('mwhere', ['home', 'gym'], ui.where, v => t('where.' + v))}<h2 class="label">${t('mov.goal')}</h2>${chipRow('mgoal', S.WORKOUT_GOALS, ui.goal, v => t('goal.' + v))}
-  <h2 class="label">${t('mov.time')}</h2>${chipRow('mtime', [10, 20, 30, 45], ui.time, v => v + ' min')}<h2 class="label">${t('mov.level')}</h2>${chipRow('mlevel', [1, 2, 3], ui.level, v => t('lvl.' + v))}</section>
-  <section class="card blush session"><p class="eyebrow">${t('mov.session')} · ${ui.time} min · ${t('lvl.' + ui.level)}</p><h2 class="h2">${t('goal.' + ui.goal)}</h2>
-  <p class="muted small">${t('mov.warm')}</p>${s.rounds ? `<p class="rounds">${t('mov.rounds', { n: s.rounds, w: s.w, r: s.r })}</p>` : (['strength', 'muscle', 'sculpt'].includes(ui.goal) ? `<p class="rounds">${t(s.home ? 'mov.loadHome' : 'mov.load')}</p>` : '')}
-  <ol class="ex">${s.picks.map(x => `<li><div class="exrow"><span><b>${e(x.name)}</b><small>${e(x.cue)}</small>${s.rounds ? '' : `<em class="rx">${x.hold ? t('mov.holds', { s: s.sets, h: s.work(x), rest: s.rest }) : t('mov.sets', { s: s.sets, r: s.reps[0] + '–' + s.reps[1], rest: s.rest })}</em>`}${x.eq ? `<small class="eq">${t('mov.use', { eq: e(x.eq) })}</small>` : ''}</span></div>${(h => h ? `<details class="howto"><summary aria-label="${t('mov.how')}: ${e(x.name)}">?</summary><div class="howbody"><p><b>${t('mov.works')}</b> ${e(h.works)}</p><ol>${h.steps.map(z => `<li>${e(z)}</li>`).join('')}</ol><p><b>${t('mov.easier')}</b> ${e(h.easier)}</p></div></details>` : '')((S.HOWTO || {})[x.id])}</li>`).join('')}</ol><p class="muted small">${t('mov.cool')}</p>
+  const s = build(), hist = (St.get().workouts || []).slice(-5).reverse(), done = (St.get().workouts || []).some(x => x.date === today()), g = ui.goal;
+  const tip = g === 'yoga' || g === 'cardio' ? TIPS[g] : (ui.where === 'gym' ? 'Pick a weight where the last 1–2 reps feel hard but form stays clean.' : 'Lower slowly (3 s) and stop 1–2 reps before failure.');
+  return `<header class="hero"><h1 class="display">${t('mov.title')}</h1></header>
+  <section class="card tight">${g === 'yoga' ? '' : chipRow('mwhere', ['home', 'gym'], ui.where, v => t('where.' + v))}${chipRow('mgoal', S.WORKOUT_GOALS, g, v => t('goal.' + v))}
+  ${chipRow('mtime', [10, 20, 30, 45, 60], ui.time, v => v + ' min')}${chipRow('mlevel', [1, 2, 3], ui.level, v => t('lvl.' + v))}</section>
+  <section class="card blush session tight"><p class="eyebrow">≈ ${s.est} min · ${t('lvl.' + ui.level)}${g === 'yoga' ? '' : ' · ' + t('where.' + ui.where)}</p><h2 class="h2">${t('goal.' + g)}</h2>
+  <p class="tip">${tip}</p>${s.rounds ? `<p class="rounds">${t('mov.rounds', { n: s.rounds, w: s.w, r: s.r })}</p>` : ''}
+  <ol class="ex">${g === 'yoga' || g === 'cardio' ? '' : `<li class="wu">${t('mov.warm')}</li>`}${s.picks.map(x => exRow(x, s.rx ? s.rx(x) : '')).join('')}</ol>
+  <details class="coach"><summary>Coach tips</summary><ul><li>${TIPS[g]}</li><li>Progress: when every set feels easy, add 1–2 reps or a little weight next time.</li><li>Rest is part of the plan: ${ui.level === 3 ? '2 min after heavy compounds' : '60–90 s'}, less for core.</li><li>Train each muscle 2× a week for best results.</li></ul></details>
   <div class="links"><button class="btn ghost" data-act="shuffle">${t('mov.shuffle')}</button><button class="btn" data-act="wdone">${t('mov.done')}</button></div>${done ? `<p class="okmsg">${t('mov.doneToday')}</p>` : ''}</section>
-  <section class="card"><h2 class="h2">${t('mov.history')}</h2>${hist.length ? `<ul class="hist">${hist.map(h => `<li><span>${fmtDate(h.date)}</span><b>${t('goal.' + h.goal)}</b><small>${h.time} min · ${t('lvl.' + h.level)}</small></li>`).join('')}</ul>` : `<p class="muted">${t('mov.noHistory')}</p>`}</section>`;
+  ${hist.length ? `<section class="card tight"><h2 class="h3">${t('mov.history')}</h2><ul class="hist">${hist.map(h => `<li><span>${fmtDate(h.date)}</span><b>${t('goal.' + h.goal)}</b><small>${h.time} min</small></li>`).join('')}</ul></section>` : ''}`;
 }
 
 /* ---------- Recovery ---------- */
 function recovery() {
   const rec = d0().checks.recover, wd = (St.get().wind || {})[today()] || [], wdone = (St.get().windDone || {})[today()];
-  return `<header class="hero"><p class="eyebrow">${t('rec.eyebrow')}</p><h1 class="display">${t('rec.title')}</h1><p class="lead">${t('rec.lead')}</p>${rec ? `<p class="okmsg">${t('rec.recovered')}</p>` : ''}</header>
+  return `<header class="hero"><h1 class="display">${t('rec.title')}</h1>${rec ? `<p class="okmsg">${t('rec.recovered')}</p>` : ''}</header>
   <section class="card breath"><h2 class="h2">${t('rec.breath')}</h2><p class="muted">${t('rec.breathLead')}</p>
   <div class="bwrap"><div id="bcircle" class="bcircle"></div><p id="bphase" class="bphase" aria-live="polite">${t('rec.ready')}</p><p id="btime" class="muted small">${ui.bmin}:00</p></div>
   ${chipRow('bmin', [1, 3, 5], ui.bmin, v => v + ' min')}<button class="btn wide" data-act="breath" id="bbtn">${t(ui.breath ? 'rec.stop' : 'rec.start')}</button></section>
@@ -127,7 +156,7 @@ function journal() {
   const days = S.range(0, 6).map(i => { const d = new Date(); d.setDate(d.getDate() - 6 + i); return S.dkey(d); });
   const keys = Object.keys(J).sort().reverse();
   const refl = S.range(1, 30).filter(n => (St.get().reset[n] || {}).reflection);
-  return `<header class="hero"><p class="eyebrow">${t('jr.eyebrow')}</p><h1 class="display">${t('jr.title')}</h1><p class="lead">${e(new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }))}</p></header>
+  return `<header class="hero"><h1 class="display">${t('jr.title')}</h1><p class="lead">${e(new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }))}</p></header>
   <section class="card"><h2 class="label">${t('jr.mood')}</h2>${scale('jmood', 'mood', ui.jm)}<h2 class="label">${t('jr.energy')}</h2>${scale('jenergy', 'energy', ui.je)}
   <label class="label" for="jnote">${t('jr.note')}</label><textarea id="jnote" rows="5">${e(ui.jn)}</textarea>
   <button class="btn wide" data-act="jsave"${ui.jm && ui.je ? '' : ' disabled'}>${t('jr.save')}</button>${ui.jsaved ? `<p class="okmsg">${t('jr.saved')}</p>` : ''}</section>

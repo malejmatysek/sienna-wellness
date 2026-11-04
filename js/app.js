@@ -70,7 +70,7 @@ function resetView() {
 function dayView(n) {
   const d = dayData(n), r = rday(n), cnt = S.RESET_TASKS.filter(x => r.tasks[x]).length;
   return `<a class="back" href="#/reset">← ${t('reset.title')}</a>
-  <header class="hero"><p class="eyebrow">${t('reset.day', { n })} / 30 · ${esc(phaseOf(n).name)}</p><h1 class="display">${esc(d.title)}</h1><p class="lead"><em>${esc(d.focus)}</em></p></header>
+  <header class="hero keep"><p class="eyebrow">${t('reset.day', { n })} / 30 · ${esc(phaseOf(n).name)}</p><h1 class="display">${esc(d.title)}</h1><p class="lead"><em>${esc(d.focus)}</em></p></header>
   <div class="bar-h"><i style="width:${cnt / 5 * 100}%"></i></div><p class="muted small">${t('reset.tasksDone', { n: cnt })}</p>
   <ul class="checklist">${S.RESET_TASKS.map(k => checkBtn(`data-task="${k}" data-day="${n}"`, r.tasks[k], t('part.' + k), esc(d[k]))).join('')}</ul>
   ${cnt === 5 ? `<div class="card done-card">${MARK}<p>${t('reset.dayDone')}</p></div>` : ''}
@@ -90,6 +90,7 @@ function onboarding() {
 }
 let lastRoute = null;
 function render() {
+  const keepY = window.scrollY, keepX = [...document.querySelectorAll('#view .chips.scroll')].map(c => c.scrollLeft), keepOpen = [...document.querySelectorAll('#view details[open]')].length;
   const s = St.get(), view = $('#view'), r = (location.hash.slice(2) || 'home').split('/'), sec = r[0];
   const ae = document.activeElement, focusSel = ae && ['data-check', 'data-task', 'data-water'].map(a => ae.hasAttribute(a) ? `[${a}="${ae.getAttribute(a)}"]` : '').join('');
   document.body.classList.toggle('onboarding', !s.profile);
@@ -104,8 +105,11 @@ function render() {
   }
   if (route !== lastRoute) { view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); lastRoute = route; }
   if (S.popSel) { const el = view.querySelector(S.popSel); el && el.classList.add('pop'); S.popSel = null; }
-  if (focusSel) { const el = view.querySelector(focusSel); el && el.focus(); }
+  if (focusSel) { const el = view.querySelector(focusSel); el && el.focus({ preventScroll: true }); }
+  if (route === lastRouteKeep) { view.querySelectorAll('.chips.scroll').forEach((c, i) => { c.scrollLeft = keepX[i] || 0; }); window.scrollTo(0, keepY); }
+  lastRouteKeep = route;
 }
+let lastRouteKeep = null;
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.check) { const id = b.dataset.check; setDay(d => { d.checks[id] = !d.checks[id]; if (d.checks[id]) S.popSel = `[data-check="${id}"]`; }); }

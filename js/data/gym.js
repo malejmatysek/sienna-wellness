@@ -1,9 +1,6 @@
 /* Gym exercises (basic machines + free weights) and their how-tos. Home exercises get where:'home'. */
 (function () {
   const S = window.SIENNA, H = S.HOWTO = S.HOWTO || {};
-  const HOLDS = ['plank', 'side-plank', 'v-sit', 'wall-sit', 'superman', 'hollow-rock', 'pallof-press-hold'];
-  S.EXERCISES.forEach(x => { x.where = 'home'; if (HOLDS.includes(x.id)) x.hold = true; if (x.goals.includes('strength') || (x.goals.includes('sculpt') && x.level > 1)) x.goals.push('muscle'); });
-  S.WORKOUT_GOALS = ['strength', 'muscle', 'sculpt', 'core', 'cardio', 'mobility'];
   // [id, name, equipment, goals, level, cue, works, steps, easier]
   const G = [
    ['g-leg-press','Leg press','Leg press machine',['strength','muscle','sculpt'],1,'Feet hip-width, lower until knees reach 90°.','Thighs, glutes',['Sit with your back flat on the pad, feet hip-width on the platform.','Release the safety handles.','Bend your knees slowly towards your chest.','Press through your whole foot to straighten, without locking your knees.'],'Use a lighter weight and a smaller range.'],

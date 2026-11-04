@@ -51,30 +51,31 @@ const res = []; const ok = (name, cond, info = '') => { res.push([name, !!cond])
     await p.click('.pager a.btn:not(.ghost)'); await W(250); ok('next day link', (await p.evaluate(() => location.hash)) === '#/reset/2');
     await go('#/reset'); ok('reset overview: 1 done, current day 2', await cnt('.dchip.done') === 1 && (await txt('.dchip.cur')) === '2');
     // Nav
-    for (const [n, h] of [['reset', '30-Day Reset'], ['nutrition', 'Nourish'], ['more', 'More'], ['home', 'Anna']]) { await p.click(`[data-nav=${n}]`); await W(300); ok(`nav ${n}`, (await txt('#view h1')).includes(h) && await p.locator(`[data-nav=${n}][aria-current=page]`).count(), await txt('#view h1')); }
+    for (const [n, h] of [['reset', '30-Day Reset'], ['nutrition', 'Food'], ['more', 'More'], ['home', 'Anna']]) { await p.click(`[data-nav=${n}]`); await W(300); ok(`nav ${n}`, (await txt('#view h1')).includes(h) && await p.locator(`[data-nav=${n}][aria-current=page]`).count(), await txt('#view h1')); }
     await go('#/more'); await p.screenshot({ path: path.join(SHOTS, 'more.png') });
-    for (const [id, h] of [['movement', 'Movement'], ['recovery', 'Recovery'], ['cycle', 'Cycle'], ['journal', 'My Journal'], ['settings', 'Settings']]) {
+    for (const [id, h] of [['recovery', 'Recovery'], ['cycle', 'Cycle'], ['journal', 'My Journal'], ['settings', 'Settings']]) {
       await go('#/more'); await p.click(`[data-more=${id}]`); await W(300);
       ok(`More → ${id}`, (await txt('#view h1')).includes(h) && await p.locator('[data-nav=more][aria-current=page]').count(), await txt('#view h1'));
       await p.click('.back'); await W(250); ok(`back to More from ${id}`, (await p.evaluate(() => location.hash)) === '#/more');
     }
     // Nutrition
     await go('#/nutrition'); const all = await cnt('.rcard');
-    ok('cookbook lists 50', all === 50, all);
+    ok('cookbook lists 75', all === 75, all);
     await p.fill('#rq', 'salmon'); await W(150); const sal = await cnt('.rcard'); ok('search filters', sal > 0 && sal < 10, sal);
-    await p.fill('#rq', ''); await p.click('[data-act=fmeal][data-val=snack]'); ok('meal filter', await cnt('.rcard') === 13, await cnt('.rcard'));
+    await p.fill('#rq', ''); await p.click('[data-act=fmeal][data-val=snack]'); ok('meal filter', await cnt('.rcard') === 18, await cnt('.rcard'));
     await p.click('.rcard .fav >> nth=0'); ok('fav toast', (await toast()).includes('favourites'));
-    await p.click('[data-act=fmeal][data-val=fav]'); ok('favourites filter', await cnt('.rcard') === 1);
+    await p.click('[data-act=fmeal][data-val=fav]'); ok('favourites filter', await cnt('.rcard') === 1, await cnt('.rcard') + ' ' + await p.evaluate(() => JSON.stringify(SIENNA.Store.get().favs)));
     await p.click('[data-act=pick]'); ok('day planner picks 4 meals', await cnt('.plan li') === 4);
-    await p.click('.rcard a >> nth=0'); await W(300); ok('recipe page', await cnt('.ing li') > 2 && await cnt('.steps li') > 0);
-    await p.click('[data-act=ate]'); ok('ate → toast', (await toast()).includes('Nourish'));
+    await p.click('.rcard summary >> nth=0'); await p.click('.rcard a >> nth=0'); await W(300); ok('recipe page', await cnt('.ing li') > 2 && await cnt('.steps li') > 0);
+    await p.click('[data-act=ate]'); ok('ate → toast', (await toast()).includes('Eat well'));
     await go('#/home'); ok('ate ticks Nourish', await p.locator('[data-check=nourish][aria-checked=true]').count());
     // Movement
-    await go('#/movement'); await p.click('[data-act=mgoal][data-val=core]'); await p.click('[data-act=mtime][data-val="30"]'); await p.click('[data-act=mlevel][data-val="1"]');
-    const beg = await txt('.ex'); await p.click('[data-act=mlevel][data-val="3"]'); const adv = await txt('.ex');
-    ok('builder: reps/holds shown, advanced differs', (await cnt('.ex > li')) >= 3 && (await txt('.ex')).includes('hold') && beg !== adv);
-    await p.click('[data-act=mwhere][data-val=gym]'); await p.click('[data-act=mgoal][data-val=muscle]'); ok('gym: machines + sets×reps', (await txt('.ex')).includes('Use:') && /\d × 8–12 reps/.test(await txt('.ex')) && await p.evaluate(() => localStorage.getItem('sienna:where')) === 'gym');
-    await p.click('[data-act=mgoal][data-val=core]');
+    await go('#/movement'); await p.click('[data-act=mwhere][data-val=gym]'); await p.click('[data-act=mgoal][data-val=full]'); await p.click('[data-act=mlevel][data-val="2"]');
+    const lens = {}; for (const m of [10, 20, 30, 45, 60]) { await p.click(`[data-act=mtime][data-val="${m}"]`); lens[m] = await p.evaluate(() => [...document.querySelectorAll('.ex .rx')].reduce((a, x) => a + parseInt(x.textContent), 0)); }
+    ok('time changes session length', lens[10] < lens[30] && lens[30] < lens[60], JSON.stringify(lens));
+    const y0 = await p.evaluate(() => window.scrollY); await p.click('[data-act=mgoal][data-val=cardio]'); ok('chip tap keeps scroll', Math.abs((await p.evaluate(() => window.scrollY)) - y0) < 5);
+    await p.click('[data-act=mgoal][data-val=yoga]'); ok('yoga flow ends in savasana', (await p.locator('.ex .exd summary b').last().innerText()) === 'Savasana');
+    await p.click('[data-act=mgoal][data-val=legs]'); const adv = await txt('.ex'); ok('gym legs: sets × reps', /\d × [\d–]+/.test(adv) && await p.evaluate(() => localStorage.getItem('sienna:where')) === 'gym');
     await p.click('[data-act=shuffle]'); ok('shuffle changes session', (await txt('.ex')) !== adv);
     await p.click('[data-act=wdone]'); ok('workout done → history', await cnt('.hist li') === 1 && (await toast()).includes('Workout'));
     // Recovery
@@ -124,7 +125,7 @@ const res = []; const ok = (name, cond, info = '') => { res.push([name, !!cond])
     await go('#/settings'); await p.click('[data-act2=pinoff]'); ok('PIN removed', !(await p.evaluate(() => JSON.parse(localStorage.getItem('sienna:v1')).settings.pin)));
     await p.click('[data-act2=wipe]'); await p.waitForLoadState(); await skipSplash(); await W(300);
     ok('delete all data → onboarding', await cnt('[data-ob=next]'));
-  } catch (e) { ok('script ran to the end', false, e.message.split('\n')[0]); }
+  } catch (e) { ok('script ran to the end', false, e.message.split('\n').slice(0,3).join(' ')); }
   ok('no JS errors', !errs.length, errs.join(' | '));
   await b.close(); srv.kill();
   const bad = res.filter(r => !r[1]); console.log(`\n${res.length - bad.length}/${res.length} passed`); process.exit(bad.length ? 1 : 0);

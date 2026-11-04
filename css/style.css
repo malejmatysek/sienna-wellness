@@ -205,3 +205,14 @@ textarea,.input,.lead,.muted{font-weight:400}
 #view.enter{animation:enter .28s ease-out both}
 .ex .rx{display:block;font-style:normal;font-weight:700;margin-top:4px;color:var(--ink,inherit)}
 .ex .eq{display:block;opacity:.75}
+/* v19 compact */
+.card{padding:16px}.card.tight{padding:14px 14px 12px}main{padding-left:16px;padding-right:16px}.hero{padding:2px 2px 0}.hero:not(.keep) .lead{display:none}
+#view>section,#view>header{margin-bottom:12px}.card .chips.scroll{margin:0 0 8px}.card .chips.scroll:last-child{margin-bottom:0}
+.session .h2{margin:2px 0 4px}.tip{font-size:14px;font-weight:600;margin:0 0 6px}.ex{gap:0;margin:6px 0;padding-left:0;list-style:none}
+.ex>li{border-top:1px solid var(--line)}.ex>li.wu{font-size:13px;color:var(--taupe);padding:8px 0;border-top:0}
+.exd>summary{list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:11px 0;cursor:pointer}.exd>summary::-webkit-details-marker{display:none}
+.exd>summary b{font-weight:700;font-size:16px}.exd .rx{font-size:13px;font-weight:600;white-space:nowrap;color:var(--taupe)}
+.exd .howbody{padding:0 0 12px;font-size:14px}.exd .howbody ol{padding-left:18px;margin:6px 0}
+.coach{margin:8px 0 4px;font-size:14px}.coach summary{font-weight:700;cursor:pointer}.coach ul{padding-left:18px;margin-top:6px;display:grid;gap:4px}
+.rlist{gap:8px}.rcard{padding:12px 54px 12px 14px}.rcard details>summary{list-style:none;cursor:pointer;display:grid;gap:2px}.rcard summary::-webkit-details-marker{display:none}
+.rcard .rt{font-weight:700;font-size:16px}.rcard .meta{font-size:13px;color:var(--taupe)}.rcard .rbody{margin-top:8px;font-size:14px}.rcard .ing{margin:6px 0;padding-left:18px}.rcard .fav{top:10px}
